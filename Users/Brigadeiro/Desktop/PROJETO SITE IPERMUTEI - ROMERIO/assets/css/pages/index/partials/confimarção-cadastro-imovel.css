@@ -1,0 +1,97 @@
+:root {
+    --primary-color: #4E1382;
+    --secondary-color: #9747FF;
+    --background-color: #F8F9FE;
+    --text-color: #333;
+    --light-text: #777;
+    --footer-bg: #2C2C2C;
+}
+ * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        line-height: 1.6;
+    }
+    .container {
+        width: 90%;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+    .confirmation-card {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        padding: 40px;
+        margin-bottom: 40px;
+    }
+    h1 {
+        color: var(--primary-color);
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2.2em;
+    }
+    .property-details {
+        margin-bottom: 30px;
+    }
+    .property-details h2 {
+        color: var(--secondary-color);
+        margin-bottom: 15px;
+        font-size: 1.5em;
+    }
+    .property-details p {
+        margin-bottom: 10px;
+    }
+    .highlight {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    .next-steps {
+        background-color: #f0f0f0;
+        border-radius: 5px;
+        padding: 20px;
+        margin-top: 30px;
+    }
+    .next-steps h3 {
+        color: var(--secondary-color);
+        margin-bottom: 15px;
+    }
+    .next-steps ul {
+        list-style-type: none;
+        padding-left: 20px;
+    }
+    .next-steps li {
+        margin-bottom: 10px;
+        position: relative;
+    }
+    .next-steps li:before {
+        content: '✓';
+        color: var(--secondary-color);
+        position: absolute;
+        left: -20px;
+    }
+    .btn {
+        display: inline-block;
+        background-color: var(--secondary-color);
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        margin-top: 20px;
+    }
+    .btn:hover {
+        background-color: var(--primary-color);
+    }
+    footer {
+        background-color: var(--footer-bg);
+        color: white;
+        text-align: center;
+        padding: 20px 0;
+        margin-top: 40px;
+    }
