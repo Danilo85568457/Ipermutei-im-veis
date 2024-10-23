@@ -40,7 +40,7 @@
         <div class="main-content">
             <h1>Descreva o Imóvel que Procura</h1>
             <div class="form-container">
-                <form id="property-search-form">
+              <form id="property-search-form" action="/api/buscar-imoveis" method="POST">
                     <div class="form-row">
                         <div class="form-col">
                             <label for="city">Cidade:</label>
@@ -92,6 +92,7 @@
                 </form>
             </div>
         </div>
+        <div id="resultContainer"></div>
     </div>
     <footer>
         <div class="container">
@@ -133,5 +134,9 @@
 
  <script src="../assets/js/global/pages/buscar-imovel.js"></script>
  <script src="../assets/js/global/pages/nav-bar.js"></script>
+ <script src="../app.js"></script>
+
+
+
 </body>
 </html>

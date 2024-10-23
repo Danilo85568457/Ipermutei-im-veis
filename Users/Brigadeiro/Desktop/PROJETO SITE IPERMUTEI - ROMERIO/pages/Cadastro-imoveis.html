@@ -42,7 +42,7 @@
 <div class="container">
   <div class="main-content">
     <h1>Descreva o imóvel que você tem para oferecer em permuta</h1>
-    <form id="propertyForm">
+    <form id="propertyForm" action="/api/cadastro-imovel" method="POST">
       <div class="form-group">
         <label for="propertyType">Tipo de Imóvel</label>
         <select id="propertyType" name="propertyType" required="">
@@ -182,5 +182,6 @@
 
  <script src="../assets/js/global/pages/cadastro-imovel.js"></script>
  <script src="../assets/js/global/pages/nav-bar.js"></script>
+ <script src="../app.js"></script>
 
 </body></html>

@@ -1,31 +1,50 @@
+document.getElementById('property-search-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+  
+    const city = document.getElementById('city').value;
+    const neighborhood = document.getElementById('neighborhood').value;
+    const minArea = document.getElementById('min-area').value;
+    const bedrooms = document.getElementById('bedrooms').value;
+    const parking = document.getElementById('parking').value;
+    const minPrice = document.getElementById('min-price').value.replace('R$', '').trim();
+    const maxPrice = document.getElementById('max-price').value.replace('R$', '').trim();
 
+    // Monta a query string com os parâmetros de busca
+    const queryParams = new URLSearchParams({
+      city,
+      neighborhood,
+      minArea,
+      bedrooms,
+      parking,
+      minPrice,
+      maxPrice
+    }).toString();
 
-const minPriceInput = document.getElementById('min-price');
-const maxPriceInput = document.getElementById('max-price');
+    // Faz a requisição para o servidor para buscar os imóveis
+    fetch(`/api/buscar-imoveis?${queryParams}`)
+      .then(response => response.json())
+      .then(properties => {
+        const resultContainer = document.getElementById('resultContainer');
+        resultContainer.innerHTML = '';
 
-function formatCurrency(input) {
-    let value = input.value.replace(/\D/g, '');
-    value = (parseInt(value) / 100).toFixed(2);
-    input.value = value.replace('.', ',');
-    input.value = 'R$ ' + input.value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-}
-
-minPriceInput.addEventListener('input', function(e) {
-    formatCurrency(e.target);
-});
-
-maxPriceInput.addEventListener('input', function(e) {
-    formatCurrency(e.target);
-});
-
-document.getElementById('property-search-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    console.log('Form submitted');
-    
-    const formData = new FormData(e.target);
-    const searchData = Object.fromEntries(formData.entries());
-    console.log('Search criteria:', searchData);
-    
-    // Redirect to the specified page
-    window.location.href = 'https://websim.ai/p/27rcsnias5_5b3x5ms5_/127';
+        if (properties.length > 0) {
+          properties.forEach(property => {
+            resultContainer.innerHTML += `
+              <div class="property">
+                <h3>${property.type} - ${property.address}, ${property.neighborhood}</h3>
+                <p>Área: ${property.area} m²</p>
+                <p>Quartos: ${property.bedrooms}</p>
+                <p>Vagas de garagem: ${property.parking_spaces}</p>
+                <p>Preço: R$ ${property.price}</p>
+              </div>
+            `;
+          });
+        } else {
+          resultContainer.innerHTML = '<p>Nenhum imóvel encontrado.</p>';
+        }
+      })
+      .catch(error => {
+        console.error('Erro ao buscar imóveis:', error);
+        alert('Erro ao buscar imóveis. Tente novamente.');
+      });
 });
