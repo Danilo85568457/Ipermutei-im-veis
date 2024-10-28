@@ -1,0 +1,41 @@
+<html><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ipermutei - Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/pages/index/partials/login.css">
+<link rel="stylesheet" href="../assets/css/pages/index/index.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <img src="../assets/files/imagem/logo.jpg" alt="ipermutei logo" class="logo" width="260" height="auto">
+            <h1>Bem-vindo de volta!</h1>
+            <p class="tagline">Entre para continuar a explorar as melhores oportunidades de permuta de imóveis!</p>
+        </div>
+        <div class="right-panel">
+            <h2>Login</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <div class="password-container">
+                        <input type="password" id="password" name="password" required>
+                        <i class="toggle-password fas fa-eye-slash" onclick="togglePassword()"></i>
+                    </div>
+                </div>
+                <div class="forgot-password">
+                    <a href="#">Esqueceu a senha?</a>
+                </div>
+                <button type="submit" class="submit-btn">Entrar</button>
+            </form>
+            <p class="register-link">Não tem uma conta? <a href="https://websim.ai/p/27rcsnias5_5b3x5ms5_/138">Cadastre-se</a></p>
+        </div>
+    </div>
+   <script src="../assets/js/global/pages/login.js"></script>
+</body>
+</html>

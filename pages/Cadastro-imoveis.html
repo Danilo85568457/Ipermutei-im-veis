@@ -1,0 +1,187 @@
+<html><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Descreva seu Imóvel para Permuta - ipermutei</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
+ <link rel="stylesheet" href="../assets/css/pages/index/partials/cadastro-imovel.css">
+ <link rel="stylesheet" href="../assets/css/pages/index/index.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+       <a href="../index.html">
+        <img src="../assets/files/imagem/logo.jpg" alt="ipermutei logo" class="logo" style="height: 40px;">
+       </a>
+        <!-- Menu para Mobile -->
+        <div class="nav-toggle">☰</div> <!-- Toggle button para mobile -->
+        <nav class="mobile-menu">
+          <ul>
+            <li><a href="../pages/Cadastro-imoveis.html">Cadastre seu imóvel</a></li>
+            <li><a href="../pages/busca-imóvel.html">Busque seu Imóvel</a></li>
+            <li><a href="../pages/Cadastro.html">Novo Usuário</a></li>
+            <li><a href="../pages/login.html">Login</a></li>
+          </ul>
+        </nav>
+  
+        <!-- Menu para Desktop -->
+        <nav class="desktop-menu">
+          <ul>
+            <li><a href="../pages/Cadastro-imoveis.html">Cadastre seu imóvel</a></li>
+            <li><a href="../pages/busca-imóvel.html">Busque seu Imóvel</a></li>
+            <li><a href="../pages/Cadastro.html">Novo Usuário</a></li>
+            <li><a href="../pages/login.html">Login</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+<div class="container">
+  <div class="main-content">
+    <h1>Descreva o imóvel que você tem para oferecer em permuta</h1>
+    <form id="propertyForm" action="/api/cadastro-imovel" method="POST">
+      <div class="form-group">
+        <label for="propertyType">Tipo de Imóvel</label>
+        <select id="propertyType" name="propertyType" required="">
+          <option value="">Selecione o tipo de imóvel</option>
+          <option value="apartment">Apartamento</option>
+          <option value="house">Casa</option>
+          <option value="commercial">Comercial</option>
+          <option value="land">Terreno</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="address">Endereço</label>
+        <input type="text" id="address" name="address" required="" placeholder="Rua">
+      </div>
+      <div class="form-group">
+        <div class="form-row">
+          <div class="form-col">
+            <label for="number">Número</label>
+            <input type="text" id="number" name="number" required="">
+          </div>
+          <div class="form-col">
+            <label for="complement">Complemento</label>
+            <input type="text" id="complement" name="complement" placeholder="Opcional">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-row">
+          <div class="form-col">
+            <label for="cep">CEP</label>
+            <input type="text" id="cep" name="cep" required="" placeholder="00000-000">
+          </div>
+          <div class="form-col">
+            <label for="neighborhood">Bairro</label>
+            <input type="text" id="neighborhood" name="neighborhood" required="">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-row">
+          <div class="form-col">
+            <label for="area">Área (m²)</label>
+            <input type="number" id="area" name="area" required="" min="1">
+          </div>
+          <div class="form-col">
+            <label for="bedrooms">Quartos</label>
+            <input type="number" id="bedrooms" name="bedrooms" required="" min="0">
+          </div>
+          <div class="form-col">
+            <label for="suites">Suítes</label>
+            <input type="number" id="suites" name="suites" required="" min="0">
+          </div>
+          <div class="form-col">
+            <label for="bathrooms">Banheiros</label>
+            <input type="number" id="bathrooms" name="bathrooms" required="" min="0">
+          </div>
+          <div class="form-col">
+            <label for="parkingSpaces">Vagas</label>
+            <input type="number" id="parkingSpaces" name="parkingSpaces" required="" min="0">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="price">Valor Pretendido (R$)</label>
+        <input type="text" id="price" name="price" required="" placeholder="R$ 0,00">
+      </div>
+      <div class="form-group">
+        <label for="description">Descrição Detalhada</label>
+        <textarea id="description" name="description" required="" placeholder="Descreva as características do seu imóvel, estado de conservação, diferenciais, etc."></textarea>
+      </div>
+      <div class="form-group photo-upload-group">
+        <div class="photo-upload-header">
+          <label id="photoLabel">Carregar as Fotos do Seu Imóvel (0/12)</label>
+          <input type="file" id="photoInput" accept="image/*" multiple="">
+          <button type="button" class="upload-btn" onclick="document.getElementById('photoInput').click()">Selecionar Fotos</button>
+        </div>
+        <div class="photo-upload" id="photoUpload"></div>
+      </div>
+      <div class="form-group">
+        <div class="checkbox-container">
+          <input type="checkbox" id="authorizeCheckbox" required>
+          <label for="authorizeCheckbox">
+            Autorizo a ipermutei a cadastrar meu imóvel em sua base de dados e a divulgá-lo através de anúncios para encontrar outro imóvel que esteja disponível para propor uma permuta. Me responsabilizo por todas as informações prestadas acima que traduzem as especificações do meu imóvel.
+          </label>
+        </div>
+      </div>
+      <button type="submit" class="btn-submit" id="submitButton" disabled>Enviar Para Cadastro</button>
+    </form>
+  </div>
+</div>
+
+<div id="successModal" class="modal">
+  <div class="modal-content">
+    <span class="close">×</span>
+    <h2>Parabéns!</h2>
+    <p>Nossa equipe irá apresentar sua consulta de permuta ao proprietário e assim que ele nos responder, entraremos em contato com você.</p>
+    <p><strong>Obrigado! DEUS abençoe esta negociação</strong></p>
+  </div>
+</div>
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Sobre a ipermutei</h3>
+        <p>A ipermutei é uma plataforma inovadora que revoluciona o mercado imobiliário, facilitando a permuta de imóveis de forma inteligente e eficiente.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Nossa Missão</h3>
+        <p>Simplificar e agilizar o processo de troca de imóveis, proporcionando uma experiência transparente e satisfatória para todos os envolvidos.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Nosso Propósito</h3>
+        <p>Transformar o mercado imobiliário, tornando a permuta de imóveis uma opção acessível, segura e vantajosa para proprietários e compradores.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Contato</h3>
+        <p>Email: contato@ipermutei.com.br</p>
+        <p>Telefone: (11) 1234-5678</p>
+        <div class="social-icons">
+          <a href="https://facebook.com/ipermutei" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+          <a href="https://instagram.com/ipermutei" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="https://linkedin.com/company/ipermutei" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+          <a href="https://youtube.com/ipermutei" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="footer-section">
+        <h3>Legal</h3>
+        <p><a href="/termos-de-uso" class="footer-link">Termos de Uso</a></p>
+        <p><a href="/politica-de-privacidade" class="footer-link">Política de Privacidade</a></p>
+      </div>
+    </div>
+    <div class="copyright">
+      <p style="color: #ecddf8;">© 2023 ipermutei. Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+ <script src="../assets/js/global/pages/cadastro-imovel.js"></script>
+ <script src="../assets/js/global/pages/nav-bar.js"></script>
+ <script src="../app.js"></script>
+
+</body></html>

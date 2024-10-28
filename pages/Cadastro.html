@@ -1,0 +1,110 @@
+<html><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro - ipermutei</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/pages/index/partials/cadastro.css">
+<link rel="stylesheet" href="../assets/css/pages/index/index.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <img src="../assets/files/imagem/logo.jpg" alt="ipermutei logo" class="logo" width="260" height="auto">
+            <h1>É inteligente você estar aqui!</h1>
+            <p class="tagline">Cadastre-se para começar a encontrar as melhores oportunidades de permuta de imóveis!</p>
+        </div>
+        <div class="right-panel">
+            <h2>Cadastro</h2>
+            <form id="registration-form">
+                <div class="form-group">
+                    <label for="name">Nome Completo</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="telefone">Telefone</label>
+                    <input type="tel" id="telefone" name="telefone" required>
+                </div>
+                <div class="form-group">
+                    <label>Você é?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="proprietario" name="tipo_conta" value="proprietario" required>
+                            <label for="proprietario">Proprietário</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="corretor" name="tipo_conta" value="corretor" required>
+                            <label for="corretor">Corretor</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <div class="password-container">
+                        <input type="password" id="password" name="password" required>
+                        <i class="toggle-password fas fa-eye-slash" onclick="togglePassword('password')"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirmar Senha</label>
+                    <div class="password-container">
+                        <input type="password" id="confirm-password" name="confirm-password" required>
+                        <i class="toggle-password fas fa-eye-slash" onclick="togglePassword('confirm-password')"></i>
+                    </div>
+                </div>
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">Li e aceito os Termos de Uso e a Política de Privacidade</label>
+                </div>
+                <button type="submit" class="submit-btn">Cadastrar</button>
+            </form>
+            <p class="login-link">Já tem uma conta? <a href="https://websim.ai/p/27rcsnias5_5b3x5ms5_/134">Faça login</a></p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('registration-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Basic form validation
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const telefone = document.getElementById('telefone').value;
+            const tipoConta = document.querySelector('input[name="tipo_conta"]:checked');
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const terms = document.getElementById('terms').checked;
+
+            if (!name || !email || !telefone || !tipoConta || !password || !confirmPassword || !terms) {
+                alert('Por favor, preencha todos os campos e aceite os termos.');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                alert('As senhas não coincidem.');
+                return;
+            }
+
+            // If validation passes, redirect to the specified page
+            window.location.href = 'https://websim.ai/p/27rcsnias5_5b3x5ms5_/116';
+        });
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        }
+    </script>
+</body>
+</html>
