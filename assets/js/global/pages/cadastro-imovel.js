@@ -84,7 +84,6 @@ document.getElementById('propertyForm').addEventListener('submit', function(even
   // Criação de um objeto FormData para enviar os dados do formulário e arquivos
   const formData = new FormData();
   formData.append('propertyType', document.getElementById('propertyType').value);
-  console.log('Tipo de Propriedade:', propertyType)
   formData.append('address', document.getElementById('address').value);
   formData.append('number', document.getElementById('number').value);
   formData.append('complement', document.getElementById('complement').value);
@@ -131,7 +130,7 @@ document.getElementById('propertyForm').addEventListener('submit', function(even
     alert('Erro ao cadastrar o imóvel. Tente novamente.');
   });
 });
-
+ 
 
 
 // Funções para controle do modal de sucesso

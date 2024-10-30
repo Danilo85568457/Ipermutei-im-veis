@@ -46,6 +46,7 @@ const upload = multer({
     if (mimetype && extname) {
       return cb(null, true);
     } else {
+      console.error(`Tipo de arquivo inválido: ${file.originalname}`);
       return cb(new Error('Apenas imagens (JPEG, PNG, GIF) são permitidas.'));
     }
   },
@@ -58,9 +59,16 @@ app.post('/api/cadastro-imovel', upload.array('photos', 12), async (req, res) =>
   
   const { propertyType, address, number, complement, cep, neighborhood, area, bedrooms, suites, bathrooms, parkingSpaces, price, description } = req.body;
 
+  // Validação simples dos dados recebidos
+  if (!propertyType || !address || !price) {
+      console.warn('Dados inválidos recebidos:', req.body);
+      return res.status(400).json({ message: 'Dados obrigatórios não informados.' });
+  }
+
   try {
       // Extrair URLs das fotos para salvar no banco
       const photoUrls = req.files.map(file => file.location);
+      console.log('URLs das fotos:', photoUrls);
 
       // Query para inserir o imóvel e salvar as URLs das fotos
       const query = `INSERT INTO imoveis (property_type, address, number, complement, cep, neighborhood, area, bedrooms, suites, bathrooms, parking_spaces, price, description, photos)
@@ -82,7 +90,7 @@ app.post('/api/cadastro-imovel', upload.array('photos', 12), async (req, res) =>
       if (error.code === '23505') {
           return res.status(409).json({ message: 'Imóvel já cadastrado.' });
       }
-      res.status(500).json({ message: 'Erro ao cadastrar imóvel.' });
+      res.status(500).json({ message: 'Erro ao cadastrar imóvel.', error: error.message });
   }
 });
 
