@@ -5,24 +5,37 @@ const { Pool } = require('pg');
 const multer = require('multer');
 const { S3Client } = require('@aws-sdk/client-s3');
 const multerS3 = require('multer-s3');
+const cors = require('cors'); 
 
 const app = express();
 app.use(express.json());
 
 
+// Configuração do CORS
+const corsOptions = {
+  origin: 'https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com', 
+  methods: ['POST'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));  
+
 const s3 = new S3Client({
-  region: 'us-east-1',
-  credentials: {
+  region: 'sa-east-1', // Apenas a região
+   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   },
+
+  forcePathStyle: true, 
 });
+
 
 const upload = multer({
   storage: multerS3({
     s3: s3,
     bucket: 'meu-bucket-ipermutei',
-    acl: 'public-read',
+    // Remova a linha 'acl: public-read'
     metadata: (req, file, cb) => {
       cb(null, { fieldName: file.fieldname });
     },
@@ -30,7 +43,7 @@ const upload = multer({
       cb(null, `uploads/${Date.now().toString()}_${file.originalname}`);
     },
   }),
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 5 * 1024 * 1024 }, // Limite de 5 MB para o tamanho do arquivo
   fileFilter: (req, file, cb) => {
     const filetypes = /jpeg|jpg|png|gif/;
     const mimetype = filetypes.test(file.mimetype);
@@ -45,15 +58,12 @@ const upload = multer({
   },
 });
 
+
 app.post('/upload', upload.single('image'), (req, res) => {
   res.status(200).send({ message: 'Upload bem-sucedido', file: req.file });
 }, (error, req, res, next) => {
   console.error('Erro no upload:', error);
   res.status(400).send({ error: error.message });
-});
-
-app.listen(3000, () => {
-  console.log('Servidor rodando na porta 3000');
 });
 
 
