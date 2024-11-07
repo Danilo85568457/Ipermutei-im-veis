@@ -22,29 +22,34 @@ document.getElementById('property-search-form').addEventListener('submit', funct
 
     // Faz a requisição para o servidor para buscar os imóveis
     fetch(`/api/buscar-imoveis?${queryParams}`)
-      .then(response => response.json())
-      .then(properties => {
-        const resultContainer = document.getElementById('resultContainer');
-        resultContainer.innerHTML = '';
+  .then(response => response.json())
+  .then(properties => {
+    const resultContainer = document.getElementById('resultContainer');
+    resultContainer.innerHTML = '';
 
-        if (properties.length > 0) {
-          properties.forEach(property => {
-            resultContainer.innerHTML += `
-              <div class="property">
-                <h3>${property.type} - ${property.address}, ${property.neighborhood}</h3>
-                <p>Área: ${property.area} m²</p>
-                <p>Quartos: ${property.bedrooms}</p>
-                <p>Vagas de garagem: ${property.parking_spaces}</p>
-                <p>Preço: R$ ${property.price}</p>
-              </div>
-            `;
-          });
-        } else {
-          resultContainer.innerHTML = '<p>Nenhum imóvel encontrado.</p>';
-        }
-      })
-      .catch(error => {
-        console.error('Erro ao buscar imóveis:', error);
-        alert('Erro ao buscar imóveis. Tente novamente.');
+    if (properties.length > 0) {
+      properties.forEach(property => {
+        resultContainer.innerHTML += `
+          <div class="property">
+            <h3>${property.property_type} - ${property.address}, ${property.neighborhood}</h3>
+            <p>Área: ${property.area} m²</p>
+            <p>Quartos: ${property.bedrooms}</p>
+            <p>Vagas de garagem: ${property.parking_spaces}</p>
+            <p>Preço: R$ ${property.price}</p>
+            <p>Descrição: ${property.description}</p>
+            ${property.photos ? property.photos.map(photo => `
+              <img src="${photo.location}" alt="Foto do imóvel" class="property-photo">
+            `).join('') : ''}
+          </div>
+        `;
       });
+    } else {
+      resultContainer.innerHTML = '<p>Nenhum imóvel encontrado.</p>';
+    }
+  })
+  .catch(error => {
+    console.error('Erro ao buscar imóveis:', error);
+    alert('Erro ao buscar imóveis. Tente novamente.');
+  });
+
 });
