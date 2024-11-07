@@ -77,13 +77,19 @@ const pool = new Pool({
 app.post('/api/cadastro-imovel', upload.array('photos', 12), async (req, res) => {
   console.log('Dados recebidos no corpo da requisição:', req.body);
   console.log('Fotos recebidas:', req.files);
-  
+
   const { propertyType, address, number, complement, cep, neighborhood, area, bedrooms, suites, bathrooms, parkingSpaces, price, description } = req.body;
 
   // Validação simples dos dados recebidos
   if (!propertyType || !address || !price) {
       console.warn('Dados inválidos recebidos:', req.body);
       return res.status(400).json({ message: 'Dados obrigatórios não informados.' });
+  }
+
+  // Garantir que o preço seja numérico
+  const precoNumerico = parseFloat(price);
+  if (isNaN(precoNumerico)) {
+      return res.status(400).json({ message: 'Preço inválido.' });
   }
 
   try {
@@ -96,11 +102,11 @@ app.post('/api/cadastro-imovel', upload.array('photos', 12), async (req, res) =>
                      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id`;
       
       const values = [
-          propertyType, address, number, complement, cep, neighborhood, area, bedrooms, suites, bathrooms, parkingSpaces, price, description,
+          propertyType, address, number, complement, cep, neighborhood, area, bedrooms, suites, bathrooms, parkingSpaces, precoNumerico, description,
           JSON.stringify(photoUrls) // Salvar URLs das fotos como JSON no banco de dados
       ];
 
-      console.log('Executando query no banco de dados:', query, values); 
+      console.log('Executando query no banco de dados:', query, values);
 
       const result = await pool.query(query, values);
       console.log('Resultado da query:', result);
@@ -114,6 +120,7 @@ app.post('/api/cadastro-imovel', upload.array('photos', 12), async (req, res) =>
       res.status(500).json({ message: 'Erro ao cadastrar imóvel.', error: error.message });
   }
 });
+
 
 
 

@@ -70,6 +70,13 @@ authorizeCheckbox.addEventListener('change', function() {
 });
 
 // Função para salvar os dados do formulário de cadastro
+function formatarPreco(preco) {
+  let precoFormatado = preco.replace('R$', '').replace(/\./g, '').replace(',', '.');
+  return parseFloat(precoFormatado);
+}
+
+// Front-end
+
 document.getElementById('propertyForm').addEventListener('submit', function(event) {
   console.log('Formulário enviado');
   event.preventDefault();
@@ -78,8 +85,6 @@ document.getElementById('propertyForm').addEventListener('submit', function(even
   const photoInput = document.getElementById('photoInput');
   const uploadedFiles = Array.from(photoInput.files);
   console.log('Arquivos de fotos carregados:', uploadedFiles);
-
-  console.log('Arquivos de fotos carregados:', uploadedFiles); // Log para verificar se os arquivos de fotos foram capturados
 
   // Criação de um objeto FormData para enviar os dados do formulário e arquivos
   const formData = new FormData();
@@ -94,7 +99,11 @@ document.getElementById('propertyForm').addEventListener('submit', function(even
   formData.append('suites', document.getElementById('suites').value);
   formData.append('bathrooms', document.getElementById('bathrooms').value);
   formData.append('parkingSpaces', document.getElementById('parkingSpaces').value);
-  formData.append('price', document.getElementById('price').value);
+  
+  // Formatar o preço antes de enviar
+  const price = formatarPreco(document.getElementById('price').value);
+  formData.append('price', price); // Agora o preço é um número
+  
   formData.append('description', document.getElementById('description').value);
 
   // Adiciona as fotos ao FormData
@@ -113,7 +122,7 @@ document.getElementById('propertyForm').addEventListener('submit', function(even
         throw new Error('Erro na resposta do servidor: ' + response.statusText);
     }
     return response.json();
- })
+  })
   .then(data => {
     console.log('Dados recebidos do servidor:', data); // Verificar o conteúdo da resposta
     if (data.message) {
@@ -130,6 +139,7 @@ document.getElementById('propertyForm').addEventListener('submit', function(even
     alert('Erro ao cadastrar o imóvel. Tente novamente.');
   });
 });
+
  
 
 
