@@ -43,6 +43,19 @@
               <form id="property-search-form" action="/api/buscar-imoveis" method="POST">
                     <div class="form-row">
                         <div class="form-col">
+                            <label for="city">Tipo de imóvel:</label>
+            
+                        </div>
+                        <select id="propertyType" name="propertyType" required="">
+                          <option value="">Selecione o tipo de imóvel</option>
+                          <option value="apartment">Apartamento</option>
+                          <option value="house">Casa</option>
+                          <option value="commercial">Comercial</option>
+                          <option value="land">Terreno</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
                             <label for="city">Cidade:</label>
                             <input type="text" id="city" name="city" required="">
                         </div>

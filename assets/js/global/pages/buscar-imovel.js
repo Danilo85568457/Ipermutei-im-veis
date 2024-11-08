@@ -1,6 +1,7 @@
 document.getElementById('property-search-form').addEventListener('submit', function(event) {
     event.preventDefault();
   
+    const propertyType = document.getElementById('propertyType').value;
     const city = document.getElementById('city').value;
     const neighborhood = document.getElementById('neighborhood').value;
     const minArea = document.getElementById('min-area').value;
@@ -11,6 +12,7 @@ document.getElementById('property-search-form').addEventListener('submit', funct
 
     // Monta a query string com os parâmetros de busca
     const queryParams = new URLSearchParams({
+      propertyType,
       city,
       neighborhood,
       minArea,
@@ -21,7 +23,7 @@ document.getElementById('property-search-form').addEventListener('submit', funct
     }).toString();
 
     // Faz a requisição para o servidor para buscar os imóveis
-    fetch(`/api/buscar-imoveis?${queryParams}`)
+    fetch(`https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/buscar-imoveis?${queryParams}`)
   .then(response => response.json())
   .then(properties => {
     const resultContainer = document.getElementById('resultContainer');
