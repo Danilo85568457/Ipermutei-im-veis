@@ -122,32 +122,72 @@ app.post('/api/cadastro-imovel', upload.array('photos', 12), async (req, res) =>
 
 
 app.get('/api/buscar-imoveis', async (req, res) => {
-  const { city } = req.query;
-  console.error("Rota /api/buscar-imoveis acessada com sucesso");
+  const { city, neighborhood, minArea, bedrooms, parking, minPrice, maxPrice } = req.query;
+  
+  // Log inicial dos parâmetros recebidos
+  console.error("Parâmetros de busca recebidos:", { city, neighborhood, minArea, bedrooms, parking, minPrice, maxPrice });
 
   try {
-    let query = `SELECT * FROM imoveis WHERE 1=1`;
+    // Query base para buscar imóveis
+    let query = `SELECT * FROM imoveis WHERE 1=1`; // Base da query
     const values = [];
 
-    // Filtro de cidade
+    // Adiciona filtros dinâmicos com base nos parâmetros fornecidos
     if (city) {
       query += ` AND LOWER(address) LIKE LOWER($${values.length + 1})`;
       values.push(`%${city}%`);
       console.error(`Filtro de cidade aplicado: ${city}`);
     }
+    if (neighborhood) {
+      query += ` AND LOWER(neighborhood) LIKE LOWER($${values.length + 1})`;
+      values.push(`%${neighborhood}%`);
+      console.error(`Filtro de bairro aplicado: ${neighborhood}`);
+    }
+    if (minArea) {
+      query += ` AND area >= $${values.length + 1}`;
+      values.push(minArea);
+      console.error(`Filtro de área mínima aplicado: ${minArea}`);
+    }
+    if (bedrooms) {
+      query += ` AND bedrooms >= $${values.length + 1}`;
+      values.push(bedrooms);
+      console.error(`Filtro de número de quartos aplicado: ${bedrooms}`);
+    }
+    if (parking) {
+      query += ` AND parking_spaces >= $${values.length + 1}`;
+      values.push(parking);
+      console.error(`Filtro de vagas de garagem aplicado: ${parking}`);
+    }
+    if (minPrice && maxPrice) {
+      query += ` AND price BETWEEN $${values.length + 1} AND $${values.length + 2}`;
+      values.push(minPrice, maxPrice);
+      console.error(`Filtro de faixa de preço aplicado: minPrice=${minPrice}, maxPrice=${maxPrice}`);
+    } else if (minPrice) {
+      query += ` AND price >= $${values.length + 1}`;
+      values.push(minPrice);
+      console.error(`Filtro de preço mínimo aplicado: ${minPrice}`);
+    } else if (maxPrice) {
+      query += ` AND price <= $${values.length + 1}`;
+      values.push(maxPrice);
+      console.error(`Filtro de preço máximo aplicado: ${maxPrice}`);
+    }
 
-    // Limite de 5 registros para simplificar o teste
-    query += ' LIMIT 5';
+    // Log da query final e dos valores antes da execução
+    console.error("Query SQL final:", query);
+    console.error("Valores para a query:", values);
 
+    // Executa a consulta
     const result = await pool.query(query, values);
-    console.error(`Imóveis encontrados: ${result.rows.length}`);
     
+    // Log dos resultados encontrados
+    console.error(`Imóveis encontrados: ${result.rows.length}`);
     res.status(200).json(result.rows);
   } catch (error) {
-    console.error('Erro ao buscar imóveis com filtro de cidade:', error);
+    console.error('Erro ao buscar imóveis:', error);
     res.status(500).json({ message: 'Erro ao buscar imóveis.' });
   }
 });
+
 
 
 
