@@ -123,6 +123,9 @@ app.post('/api/cadastro-imovel', upload.array('photos', 12), async (req, res) =>
 
 app.get('/api/buscar-imoveis', async (req, res) => {
   const { city, neighborhood, minArea, bedrooms, parking, minPrice, maxPrice } = req.query;
+  
+  // Log inicial dos parâmetros recebidos
+  console.log("Parâmetros de busca recebidos:", { city, neighborhood, minArea, bedrooms, parking, minPrice, maxPrice });
 
   try {
     // Query base para buscar imóveis
@@ -133,36 +136,58 @@ app.get('/api/buscar-imoveis', async (req, res) => {
     if (city) {
       query += ` AND LOWER(address) LIKE LOWER($${values.length + 1})`;
       values.push(`%${city}%`);
+      console.log(`Filtro de cidade aplicado: ${city}`);
     }
     if (neighborhood) {
       query += ` AND LOWER(neighborhood) LIKE LOWER($${values.length + 1})`;
       values.push(`%${neighborhood}%`);
+      console.log(`Filtro de bairro aplicado: ${neighborhood}`);
     }
     if (minArea) {
       query += ` AND area >= $${values.length + 1}`;
       values.push(minArea);
+      console.log(`Filtro de área mínima aplicado: ${minArea}`);
     }
     if (bedrooms) {
       query += ` AND bedrooms >= $${values.length + 1}`;
       values.push(bedrooms);
+      console.log(`Filtro de número de quartos aplicado: ${bedrooms}`);
     }
     if (parking) {
       query += ` AND parking_spaces >= $${values.length + 1}`;
       values.push(parking);
+      console.log(`Filtro de vagas de garagem aplicado: ${parking}`);
     }
     if (minPrice && maxPrice) {
       query += ` AND price BETWEEN $${values.length + 1} AND $${values.length + 2}`;
       values.push(minPrice, maxPrice);
+      console.log(`Filtro de faixa de preço aplicado: minPrice=${minPrice}, maxPrice=${maxPrice}`);
+    } else if (minPrice) {
+      query += ` AND price >= $${values.length + 1}`;
+      values.push(minPrice);
+      console.log(`Filtro de preço mínimo aplicado: ${minPrice}`);
+    } else if (maxPrice) {
+      query += ` AND price <= $${values.length + 1}`;
+      values.push(maxPrice);
+      console.log(`Filtro de preço máximo aplicado: ${maxPrice}`);
     }
+
+    // Log da query final e dos valores antes da execução
+    console.log("Query SQL final:", query);
+    console.log("Valores para a query:", values);
 
     // Executa a consulta
     const result = await pool.query(query, values);
+    
+    // Log dos resultados encontrados
+    console.log(`Imóveis encontrados: ${result.rows.length}`);
     res.status(200).json(result.rows);
   } catch (error) {
     console.error('Erro ao buscar imóveis:', error);
     res.status(500).json({ message: 'Erro ao buscar imóveis.' });
   }
 });
+
 
 
 const port = process.env.PORT || 4000;
