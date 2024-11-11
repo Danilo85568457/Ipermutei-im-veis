@@ -122,25 +122,33 @@ app.post('/api/cadastro-imovel', upload.array('photos', 12), async (req, res) =>
 
 
 app.get('/api/buscar-imoveis', async (req, res) => {
+  const { city } = req.query;
   console.error("Rota /api/buscar-imoveis acessada com sucesso");
 
   try {
-    // Consulta simples: busca apenas os 5 primeiros registros da tabela "imoveis"
-    const result = await pool.query('SELECT * FROM imoveis LIMIT 5');
-    
-    // Log para verificar quantos imóveis foram encontrados
+    let query = `SELECT * FROM imoveis WHERE 1=1`;
+    const values = [];
+
+    // Filtro de cidade
+    if (city) {
+      query += ` AND LOWER(address) LIKE LOWER($${values.length + 1})`;
+      values.push(`%${city}%`);
+      console.error(`Filtro de cidade aplicado: ${city}`);
+    }
+
+    // Limite de 5 registros para simplificar o teste
+    query += ' LIMIT 5';
+
+    const result = await pool.query(query, values);
     console.error(`Imóveis encontrados: ${result.rows.length}`);
     
-    // Retorna os resultados encontrados
     res.status(200).json(result.rows);
   } catch (error) {
-    // Log de erro para diagnóstico
-    console.error('Erro ao buscar imóveis:', error);
-    
-    // Retorna uma mensagem de erro para o cliente
+    console.error('Erro ao buscar imóveis com filtro de cidade:', error);
     res.status(500).json({ message: 'Erro ao buscar imóveis.' });
   }
 });
+
 
 
 
