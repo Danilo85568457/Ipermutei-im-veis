@@ -121,8 +121,6 @@ app.post('/api/cadastro-imovel', upload.array('photos', 12), async (req, res) =>
 });
 
 
-
-
 app.get('/api/buscar-imoveis', async (req, res) => {
   const { city, neighborhood, minArea, bedrooms, parking, minPrice, maxPrice } = req.query;
 
