@@ -134,7 +134,7 @@ app.get('/api/buscar-imoveis', async (req, res) => {
 
     // Adiciona filtros dinâmicos com base nos parâmetros fornecidos
     if (city) {
-      query += ` AND LOWER(address) LIKE LOWER($${values.length + 1})`;
+      query += ` AND LOWER(city) LIKE LOWER($${values.length + 1})`;
       values.push(`%${city}%`);
       console.error(`Filtro de cidade aplicado: ${city}`);
     }
