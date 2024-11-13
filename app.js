@@ -122,10 +122,10 @@ app.post('/api/cadastro-imovel', upload.array('photos', 12), async (req, res) =>
 
 
 app.get('/api/buscar-imoveis', async (req, res) => {
-  const { city, neighborhood, minArea, bedrooms, parking, minPrice, maxPrice } = req.query;
+  const {propertyType,city, neighborhood, minArea, bedrooms, parking, minPrice, maxPrice } = req.query;
   
   // Log inicial dos parâmetros recebidos
-  console.error("Parâmetros de busca recebidos:", { city, neighborhood, minArea, bedrooms, parking, minPrice, maxPrice });
+  console.error("Parâmetros de busca recebidos:", {propertyType, city, neighborhood, minArea, bedrooms, parking, minPrice, maxPrice });
 
   try {
     // Query base para buscar imóveis
@@ -133,6 +133,11 @@ app.get('/api/buscar-imoveis', async (req, res) => {
     const values = [];
 
     // Adiciona filtros dinâmicos com base nos parâmetros fornecidos
+    if (propertyType) {
+      query += ` AND LOWER(city) LIKE LOWER($${values.length + 1})`;
+      values.push(`%${propertyType}%`);
+      console.error(`Filtro tipo do Imovel aplicado: ${propertyType}`);
+    }
     if (city) {
       query += ` AND LOWER(city) LIKE LOWER($${values.length + 1})`;
       values.push(`%${city}%`);
