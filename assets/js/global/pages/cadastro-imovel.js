@@ -89,7 +89,7 @@ document.getElementById('propertyForm').addEventListener('submit', function(even
   // Criação de um objeto FormData para enviar os dados do formulário e arquivos
   const formData = new FormData();
   formData.append('propertyType', document.getElementById('propertyType').value);
-  formData.append('address', document.getElementById('address').value);
+  formData.append('city', document.getElementById('city').value);
   formData.append('number', document.getElementById('number').value);
   formData.append('complement', document.getElementById('complement').value);
   formData.append('cep', document.getElementById('cep').value);
