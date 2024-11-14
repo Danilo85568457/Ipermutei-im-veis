@@ -105,8 +105,24 @@
                 </form>
             </div>
         </div>
-        <div id="resultContainer"></div>
+        <div id="resultContainer">
+          <div class="property">
+            <img src="${photo}" alt="Foto do imóvel" class="property-photo">
+            <h3>${property.property_type} - ${property.address}, ${property.neighborhood}</h3>
+            <p>Área: ${property.area} m²</p>
+            <p>Quartos: ${property.bedrooms}</p>
+            <p>Vagas de garagem: ${property.parking_spaces}</p>
+            <p>Preço: R$ ${parseFloat(property.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+            <p>Descrição: ${property.description}</p>
+            <div class="property-photos">
+              ${property.photos && property.photos.length ? property.photos.map(photo => `
+              `).join('') : '<p>Sem fotos disponíveis.</p>'}
+            </div>
+          </div>
+        </div>
     </div>
+    <div id="propertyDetailsContainer" class="modal"></div>
+
     <footer>
         <div class="container">
           <div class="footer-content">

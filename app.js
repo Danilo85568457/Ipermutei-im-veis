@@ -194,8 +194,31 @@ app.get('/api/buscar-imoveis', async (req, res) => {
 });
 
 
+app.get('/api/imoveis/detalhes', async (req, res) => {
+  const { imovelId } = req.query; // Captura o ID do imóvel a ser detalhado
+  const apiKey = 'c9fdd79584fb8d369a6a579af1a8f681'; // Sua chave de API
+  const url = `http://sandbox-rest.vistahost.com.br/imoveis/detalhes?key=${apiKey}&imovel=${imovelId}`;
 
+  try {
+    // Requisição ao servidor remoto para obter os detalhes do imóvel
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    const details = await response.json();
 
+    if (response.ok) {
+      res.status(200).json(details);
+    } else {
+      res.status(response.status).json({ error: details.message || 'Erro ao buscar detalhes do imóvel' });
+    }
+  } catch (error) {
+    console.error('Erro ao buscar detalhes do imóvel:', error);
+    res.status(500).json({ message: 'Erro interno ao buscar detalhes do imóvel.' });
+  }
+});
 
 
 const port = process.env.PORT || 4000;
