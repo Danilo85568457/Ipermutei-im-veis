@@ -48,19 +48,23 @@ function fetchPropertiesFromSandbox() {
     paginacao: { pagina: 1, quantidade: 10 }
   };
   
-  fetch(sandboxUrl + encodeURIComponent(JSON.stringify(pesquisaParams)))
-    .then(response => {
-      if (!response.ok) throw new Error('Erro ao buscar imóveis da sandbox');
-      return response.json();
-    })
-    .then(sandboxProperties => {
-      displayProperties(sandboxProperties.imoveis, 'sandboxResultContainer');
-    })
-    .catch(error => {
-      console.error('Erro ao buscar imóveis da sandbox:', error);
-      alert('Erro ao buscar imóveis da sandbox. Tente novamente.');
-    });
+  fetch(sandboxUrl + encodeURIComponent(JSON.stringify(pesquisaParams)), {
+    method: 'GET',  // ou 'POST', dependendo do que a API exige
+    headers: {
+      'Accept': 'application/json',  // Adicionando o cabeçalho Accept para solicitar JSON
+      'Content-Type': 'application/json'  // Certificando-se de que a requisição é enviada como JSON
+    }
+  })
+  .then(response => response.json())
+  .then(sandboxProperties => {
+    displayProperties(sandboxProperties.imoveis, 'sandboxResultContainer');  // Exibindo no container da sandbox
+  })
+  .catch(error => {
+    console.error('Erro ao buscar imóveis da sandbox:', error);
+    alert('Erro ao buscar imóveis da sandbox. Tente novamente.');
+  });
 }
+
 
 // Função para exibir imóveis
 function displayProperties(properties, containerId) {
