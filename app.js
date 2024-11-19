@@ -99,6 +99,7 @@ app.post('/api/cadastro-imovel', upload.array('photos', 12), async (req, res) =>
       // Query para inserir o imóvel e salvar as URLs das fotos
       const query = `INSERT INTO imoveis (property_type, city, number, complement, cep, neighborhood, area, bedrooms, suites, bathrooms, parking_spaces, price, description, photos, address)
                      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING id`;
+                     console.log("Query a ser executada:", query);
       
       const values = [
           propertyType, city, number, complement, cep, neighborhood, area, bedrooms, suites, bathrooms, parkingSpaces, precoNumerico, description, address,
