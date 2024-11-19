@@ -133,6 +133,30 @@ app.post('/api/cadastro-imovel', upload.array('photos', 12), async (req, res) =>
   }
 });
 
+app.get('/api/get-property', async (req, res) => {
+  const { id } = req.query;
+
+  if (!id) {
+    return res.status(400).json({ message: 'ID do imóvel não informado.' });
+  }
+
+  try {
+    const query = 'SELECT * FROM imoveis WHERE id = $1';
+    const result = await pool.query(query, [id]);
+
+    if (result.rows.length > 0) {
+      const property = result.rows[0];
+      res.json({ success: true, property });
+    } else {
+      res.status(404).json({ message: 'Imóvel não encontrado.' });
+    }
+  } catch (error) {
+    console.error('Erro ao buscar o imóvel:', error);
+    res.status(500).json({ message: 'Erro ao buscar o imóvel.', error: error.message });
+  }
+});
+
+
 
 app.get('/api/buscar-imoveis', async (req, res) => {
   const {propertyType,city, neighborhood, minArea, bedrooms, parking, minPrice, maxPrice } = req.query;

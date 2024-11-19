@@ -128,9 +128,8 @@ document.getElementById('propertyForm').addEventListener('submit', function(even
     console.log('Dados recebidos do servidor:', data); // Verificar o conteúdo da resposta
     if (data.message) {
       alert(data.message); // Exibe mensagem de sucesso
-      // Oculta o formulário e exibe o modal de sucesso
-      document.getElementById('propertyForm').style.display = "none";
-      document.getElementById('successModal').style.display = "block";
+      // Redireciona para a página de detalhes do imóvel com o ID
+      window.location.href = `/pages/Confirmação-cadastro-imovel.html?id=${data.id}`;
     } else {
       alert('Erro ao cadastrar o imóvel.');
     }
@@ -140,6 +139,7 @@ document.getElementById('propertyForm').addEventListener('submit', function(even
     alert('Erro ao cadastrar o imóvel. Tente novamente.');
   });
 });
+
 
  
 
