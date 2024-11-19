@@ -101,11 +101,23 @@ app.post('/api/cadastro-imovel', upload.array('photos', 12), async (req, res) =>
                      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING id`;
                      console.log("Query a ser executada:", query);
       
-      const values = [
-          propertyType, city, number, complement, cep, neighborhood, area, bedrooms, suites, bathrooms, parkingSpaces, precoNumerico, description, address,
-          JSON.stringify(photoUrls) // Salvar URLs das fotos como JSON no banco de dados
-      ];
-
+                     const values = [
+                      propertyType,        // $1 -> property_type
+                      city,                // $2 -> city
+                      number,              // $3 -> number
+                      complement,          // $4 -> complement
+                      cep,                 // $5 -> cep
+                      neighborhood,        // $6 -> neighborhood
+                      area,                // $7 -> area
+                      bedrooms,            // $8 -> bedrooms
+                      suites,              // $9 -> suites
+                      bathrooms,           // $10 -> bathrooms
+                      parkingSpaces,       // $11 -> parking_spaces
+                      precoNumerico,       // $12 -> price
+                      description,         // $13 -> description
+                      JSON.stringify(photoUrls), // $14 -> photos (JSON válido)
+                      address              // $15 -> address
+                  ];
       console.log('Executando query no banco de dados:', query, values);
 
       const result = await pool.query(query, values);
