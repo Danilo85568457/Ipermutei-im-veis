@@ -8,6 +8,35 @@
 <link rel="stylesheet" href="../assets/css/pages/index/index.css">
 </head>
 <body>
+    <header>
+        <div class="container-1">
+          <div class="header-content">
+            <a href="/">
+                <img src="../assets/files/imagem/logo.jpg" alt="ipermutei logo" class="logo" style="height: 40px;">
+               </a>
+            <!-- Menu para Mobile -->
+            <div class="nav-toggle">☰</div> <!-- Toggle button para mobile -->
+            <nav class="mobile-menu">
+              <ul>
+                <li><a href="../pages/Cadastro-imoveis.html">Cadastre seu imóvel</a></li>
+                <li><a href="../pages/busca-imóvel.html">Busque seu Imóvel</a></li>
+                <li><a href="../pages/Cadastro.html">Novo Usuário</a></li>
+                <li><a href="../pages/login.html">Login</a></li>
+              </ul>
+            </nav>
+      
+            <!-- Menu para Desktop -->
+            <nav class="desktop-menu">
+              <ul>
+                <li><a href="../pages/Cadastro-imoveis.html">Cadastre seu imóvel</a></li>
+                <li><a href="../pages/busca-imóvel.html">Busque seu Imóvel</a></li>
+                <li><a href="../pages/Cadastro.html">Novo Usuário</a></li>
+                <li><a href="../pages/login.html">Login</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </header>
     <div class="container">
         <div class="left-panel">
             <img src="../assets/files/imagem/logo.jpg" alt="ipermutei logo" class="logo" width="260" height="auto">
@@ -33,9 +62,12 @@
                 </div>
                 <button type="submit" class="submit-btn">Entrar</button>
             </form>
-            <p class="register-link">Não tem uma conta? <a href="https://websim.ai/p/27rcsnias5_5b3x5ms5_/138">Cadastre-se</a></p>
+            <p class="register-link">Não tem uma conta? <a href="./Cadastro.html">Cadastre-se</a></p>
         </div>
     </div>
    <script src="../assets/js/global/pages/login.js"></script>
+   <script src="../assets/js/global/pages/cadastro-perfil.js"></script>
+    <script src="../assets/js/global/pages/nav-bar.js"></script>
+    <script src="../app.js"></script>
 </body>
 </html>

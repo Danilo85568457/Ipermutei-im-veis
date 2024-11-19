@@ -2,7 +2,7 @@
 document.getElementById('login-form').addEventListener('submit', function(e) {
     e.preventDefault();
     // Add form validation here if needed
-    window.location.href = 'https://websim.ai/p/27rcsnias5_5b3x5ms5_/127';
+    window.location.href = '/';
 });
 
 function togglePassword() {

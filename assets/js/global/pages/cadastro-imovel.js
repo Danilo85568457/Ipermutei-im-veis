@@ -90,6 +90,7 @@ document.getElementById('propertyForm').addEventListener('submit', function(even
   const formData = new FormData();
   formData.append('propertyType', document.getElementById('propertyType').value);
   formData.append('city', document.getElementById('city').value);
+  formData.append('address', document.getElementById('address').value);
   formData.append('number', document.getElementById('number').value);
   formData.append('complement', document.getElementById('complement').value);
   formData.append('cep', document.getElementById('cep').value);

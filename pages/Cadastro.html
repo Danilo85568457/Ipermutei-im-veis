@@ -8,6 +8,35 @@
 <link rel="stylesheet" href="../assets/css/pages/index/index.css">
 </head>
 <body>
+    <header>
+        <div class="container-1">
+          <div class="header-content">
+            <a href="/">
+                <img src="../assets/files/imagem/logo.jpg" alt="ipermutei logo" class="logo" style="height: 40px;">
+               </a>
+            <!-- Menu para Mobile -->
+            <div class="nav-toggle">☰</div> <!-- Toggle button para mobile -->
+            <nav class="mobile-menu">
+              <ul>
+                <li><a href="../pages/Cadastro-imoveis.html">Cadastre seu imóvel</a></li>
+                <li><a href="../pages/busca-imóvel.html">Busque seu Imóvel</a></li>
+                <li><a href="../pages/Cadastro.html">Novo Usuário</a></li>
+                <li><a href="../pages/login.html">Login</a></li>
+              </ul>
+            </nav>
+      
+            <!-- Menu para Desktop -->
+            <nav class="desktop-menu">
+              <ul>
+                <li><a href="../pages/Cadastro-imoveis.html">Cadastre seu imóvel</a></li>
+                <li><a href="../pages/busca-imóvel.html">Busque seu Imóvel</a></li>
+                <li><a href="../pages/Cadastro.html">Novo Usuário</a></li>
+                <li><a href="../pages/login.html">Login</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </header>
     <div class="container">
         <div class="left-panel">
             <img src="../assets/files/imagem/logo.jpg" alt="ipermutei logo" class="logo" width="260" height="auto">
@@ -62,49 +91,12 @@
                 </div>
                 <button type="submit" class="submit-btn">Cadastrar</button>
             </form>
-            <p class="login-link">Já tem uma conta? <a href="https://websim.ai/p/27rcsnias5_5b3x5ms5_/134">Faça login</a></p>
+            <p class="login-link">Já tem uma conta? <a href="/">Faça login</a></p>
         </div>
     </div>
-    <script>
-        document.getElementById('registration-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Basic form validation
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const telefone = document.getElementById('telefone').value;
-            const tipoConta = document.querySelector('input[name="tipo_conta"]:checked');
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            const terms = document.getElementById('terms').checked;
-
-            if (!name || !email || !telefone || !tipoConta || !password || !confirmPassword || !terms) {
-                alert('Por favor, preencha todos os campos e aceite os termos.');
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                alert('As senhas não coincidem.');
-                return;
-            }
-
-            // If validation passes, redirect to the specified page
-            window.location.href = 'https://websim.ai/p/27rcsnias5_5b3x5ms5_/116';
-        });
-
-        function togglePassword(inputId) {
-            const input = document.getElementById(inputId);
-            const icon = input.nextElementSibling;
-            
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            }
-        }
-    </script>
+    
+    <script src="../assets/js/global/pages/cadastro-perfil.js"></script>
+    <script src="../assets/js/global/pages/nav-bar.js"></script>
+    <script src="../app.js"></script>
 </body>
 </html>

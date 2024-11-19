@@ -10,7 +10,7 @@
     <header>
         <div class="container">
           <div class="header-content">
-            <a href="../index.html">
+            <a href="/">
                 <img src="../assets/files/imagem/logo.jpg" alt="ipermutei logo" class="logo" style="height: 40px;">
                </a>
             <!-- Menu para Mobile -->
@@ -79,15 +79,17 @@
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-col">
-                            <label for="min-price">Valor mínimo (R$):</label>
-                            <input type="text" id="min-price" name="min-price" required="">
-                        </div>
-                        <div class="form-col">
-                            <label for="max-price">Valor máximo (R$):</label>
-                            <input type="text" id="max-price" name="max-price" required="">
-                        </div>
+                      <div class="form-col">
+                        <label for="min-price">Valor mínimo (R$):</label>
+                        <input type="text" id="min-price" name="min-price" required oninput="formatCurrency(this)">
+                      </div>
+                      <div class="form-col">
+                        <label for="max-price">Valor máximo (R$):</label>
+                        <input type="text" id="max-price" name="max-price" required oninput="formatCurrency(this)">
+                      </div>
                     </div>
+                    
+                    
                     <div class="form-group">
                         <label for="relevant-items">Itens relevantes:</label>
                         <textarea id="relevant-items" name="relevant-items" placeholder="Ex.: Área de lazer, ar condicionado, varanda gourmet, etc."></textarea>
@@ -106,19 +108,7 @@
             </div>
         </div>
         <div id="resultContainer">
-          <div class="property">
-            <img src="${photo}" alt="Foto do imóvel" class="property-photo">
-            <h3>${property.property_type} - ${property.address}, ${property.neighborhood}</h3>
-            <p>Área: ${property.area} m²</p>
-            <p>Quartos: ${property.bedrooms}</p>
-            <p>Vagas de garagem: ${property.parking_spaces}</p>
-            <p>Preço: R$ ${parseFloat(property.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-            <p>Descrição: ${property.description}</p>
-            <div class="property-photos">
-              ${property.photos && property.photos.length ? property.photos.map(photo => `
-              `).join('') : '<p>Sem fotos disponíveis.</p>'}
-            </div>
-          </div>
+         
         </div>
     </div>
     <div id="propertyDetailsContainer" class="modal"></div>

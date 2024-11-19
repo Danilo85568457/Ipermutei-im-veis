@@ -8,8 +8,22 @@ document.getElementById('property-search-form').addEventListener('submit', funct
   const bedrooms = document.getElementById('bedrooms').value;
   const parking = document.getElementById('parking').value;
   
-  const minPrice = parseFloat(document.getElementById('min-price').value.replace(/[R$\s.]/g, '').replace(',', '.')) || null;
-  const maxPrice = parseFloat(document.getElementById('max-price').value.replace(/[R$\s.]/g, '').replace(',', '.')) || null;
+  // Obter valores e convertê-los para números
+const minPrice = parseFloat(
+  document.getElementById('min-price').value.replace(/[R$\s.]/g, '').replace(',', '.')
+) || null;
+
+const maxPrice = parseFloat(
+  document.getElementById('max-price').value.replace(/[R$\s.]/g, '').replace(',', '.')
+) || null;
+
+
+
+
+// Exibir os valores formatados
+console.log('Min Price:', formattedMinPrice);
+console.log('Max Price:', formattedMaxPrice);
+
 
   const queryParams = new URLSearchParams();
   if (propertyType) queryParams.append('propertyType', propertyType);
@@ -38,6 +52,32 @@ document.getElementById('property-search-form').addEventListener('submit', funct
   // Buscar imóveis da sandbox
   fetchPropertiesFromSandbox();
 });
+
+function formatCurrency(input) {
+  // Remover tudo que não seja número, exceto a vírgula
+  let value = input.value.replace(/[^\d,]/g, '');
+
+  // Se houver uma vírgula, garantimos que apenas duas casas decimais sejam permitidas
+  let parts = value.split(',');
+
+  // Limitar a quantidade de casas decimais
+  if (parts[1]) {
+    parts[1] = parts[1].slice(0, 2);  // Limitar a 2 casas decimais
+  }
+
+  // Reconstruir o valor com a vírgula no lugar correto
+  value = parts.join(',');
+
+  // Adicionar separador de milhar no número inteiro
+  value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+  // Se houver um número válido, atualizar o valor no campo
+  input.value = 'R$ ' + value;
+}
+
+
+
+
 
 // Função para buscar imóveis na sandbox
 function fetchPropertiesFromSandbox() {
