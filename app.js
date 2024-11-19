@@ -77,7 +77,7 @@ app.post('/api/cadastro-imovel', upload.array('photos', 12), async (req, res) =>
   console.log('Dados recebidos no corpo da requisição:', req.body);
   console.log('Fotos recebidas:', req.files);
 
-  const { propertyType, city, address, number, complement, cep, neighborhood, area, bedrooms, suites, bathrooms, parkingSpaces, price, description } = req.body;
+  const { propertyType, city, number, complement, cep, neighborhood, area, bedrooms, suites, bathrooms, parkingSpaces, price, description, address } = req.body;
 
   // Validação simples dos dados recebidos
   if (!propertyType || !city || !price) {
@@ -97,11 +97,11 @@ app.post('/api/cadastro-imovel', upload.array('photos', 12), async (req, res) =>
       console.log('URLs das fotos:', photoUrls);
 
       // Query para inserir o imóvel e salvar as URLs das fotos
-      const query = `INSERT INTO imoveis (property_type, city, address, number, complement, cep, neighborhood, area, bedrooms, suites, bathrooms, parking_spaces, price, description, photos)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id`;
+      const query = `INSERT INTO imoveis (property_type, city, number, complement, cep, neighborhood, area, bedrooms, suites, bathrooms, parking_spaces, price, description, address, photos)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,$15) RETURNING id`;
       
       const values = [
-          propertyType, city, address, number, complement, cep, neighborhood, area, bedrooms, suites, bathrooms, parkingSpaces, precoNumerico, description,
+          propertyType, city, number, complement, cep, neighborhood, area, bedrooms, suites, bathrooms, parkingSpaces, precoNumerico, description,address,
           JSON.stringify(photoUrls) // Salvar URLs das fotos como JSON no banco de dados
       ];
 
