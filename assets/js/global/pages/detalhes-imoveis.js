@@ -22,9 +22,7 @@ fetch(`https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/get-property?id
                 <p><span class="highlight">Valor:</span> R$ ${property.price}</p>
                 <p><span class="highlight">Descrição:</span> ${property.description}</p>
             `;
-        } else {
-            alert('Erro ao buscar detalhes do imóvel.');
-        }
+        } 
     })
     .catch(error => {
         console.error('Erro ao buscar os dados do imóvel:', error);
