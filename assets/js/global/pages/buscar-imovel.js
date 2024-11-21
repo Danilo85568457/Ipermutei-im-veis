@@ -1,6 +1,5 @@
-document.getElementById('property-search-form').addEventListener('submit', function(event) {
-  event.preventDefault();
-
+// Função para retornar os parâmetros como um objeto (para uso na sandbox)
+function getSearchParamsAsObject() {
   const propertyType = document.getElementById('propertyType').value;
   const city = document.getElementById('city').value;
   const neighborhood = document.getElementById('neighborhood').value;
@@ -8,7 +7,6 @@ document.getElementById('property-search-form').addEventListener('submit', funct
   const bedrooms = document.getElementById('bedrooms').value;
   const parking = document.getElementById('parking').value;
 
-  // Obter valores e convertê-los para números
   const minPrice = parseFloat(
     document.getElementById('min-price').value.replace(/[R$\s.]/g, '').replace(',', '.')
   ) || null;
@@ -17,9 +15,36 @@ document.getElementById('property-search-form').addEventListener('submit', funct
     document.getElementById('max-price').value.replace(/[R$\s.]/g, '').replace(',', '.')
   ) || null;
 
-  // Exibir os valores formatados
-  console.log('Min Price:', minPrice);
-  console.log('Max Price:', maxPrice);
+  const searchParams = {};
+
+  if (propertyType) searchParams.propertyType = propertyType;
+  if (city) searchParams.city = city;
+  if (neighborhood) searchParams.neighborhood = neighborhood;
+  if (minArea) searchParams.minArea = parseInt(minArea, 10);
+  if (bedrooms) searchParams.bedrooms = parseInt(bedrooms, 10);
+  if (parking) searchParams.parking = parseInt(parking, 10);
+  if (minPrice !== null) searchParams.minPrice = minPrice;
+  if (maxPrice !== null) searchParams.maxPrice = maxPrice;
+
+  return searchParams;
+}
+
+// Função para retornar os parâmetros como string (para uso no backend local)
+function getSearchParams() {
+  const propertyType = document.getElementById('propertyType').value;
+  const city = document.getElementById('city').value;
+  const neighborhood = document.getElementById('neighborhood').value;
+  const minArea = document.getElementById('min-area').value;
+  const bedrooms = document.getElementById('bedrooms').value;
+  const parking = document.getElementById('parking').value;
+
+  const minPrice = parseFloat(
+    document.getElementById('min-price').value.replace(/[R$\s.]/g, '').replace(',', '.')
+  ) || null;
+
+  const maxPrice = parseFloat(
+    document.getElementById('max-price').value.replace(/[R$\s.]/g, '').replace(',', '.')
+  ) || null;
 
   const queryParams = new URLSearchParams();
   if (propertyType) queryParams.append('propertyType', propertyType);
@@ -31,8 +56,16 @@ document.getElementById('property-search-form').addEventListener('submit', funct
   if (minPrice !== null) queryParams.append('minPrice', minPrice);
   if (maxPrice !== null) queryParams.append('maxPrice', maxPrice);
 
-  // Buscar imóveis do backend
-  fetch(`https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/buscar-imoveis?${queryParams.toString()}`)
+  return queryParams.toString();
+}
+
+// Manipulador do envio do formulário
+document.getElementById('property-search-form').addEventListener('submit', function (event) {
+  event.preventDefault();
+
+  // Parâmetros para o backend local
+  const searchParams = getSearchParams();
+  fetch(`https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/buscar-imoveis?${searchParams}`)
     .then(response => {
       if (!response.ok) throw new Error('Erro ao buscar imóveis do backend');
       return response.json();
@@ -42,13 +75,50 @@ document.getElementById('property-search-form').addEventListener('submit', funct
     })
     .catch(error => {
       console.error('Erro ao buscar imóveis do backend:', error);
-      alert('Erro ao buscar imóveis. Tente novamente.');
+      alert('Erro ao buscar imóveis do backend. Tente novamente.');
     });
 
-  // Buscar imóveis da sandbox
-  fetchPropertiesFromSandbox();
+  // Parâmetros para a sandbox da CRM
+  const searchParamsForSandbox = getSearchParamsAsObject();
+  fetch(`https://sandbox-rest.vistahost.com.br/imoveis/listar?key=c9fdd79584fb8d369a6a579af1a8f681&showtotal=1&pesquisa=${encodeURIComponent(JSON.stringify({
+    fields: ["Codigo", "Categoria", "Bairro", "Cidade", "ValorVenda", "ValorLocacao", "Dormitorios", "Suites", "Vagas", "AreaTotal"],
+    filters: searchParamsForSandbox
+  }))}`)
+    .then(response => {
+      if (!response.ok) throw new Error('Erro ao buscar imóveis da sandbox');
+      return response.json();
+    })
+    .then(properties => {
+      displayProperties(properties.imoveis, 'sandboxResultContainer');
+    })
+    .catch(error => {
+      console.error('Erro ao buscar imóveis da sandbox:', error);
+      alert('Erro ao buscar imóveis da sandbox. Tente novamente.');
+    });
 });
 
+
+function displayProperties(properties, containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = ''; // Limpa resultados anteriores
+
+  if (!properties.length) {
+    container.innerHTML = '<p>Nenhum imóvel encontrado.</p>';
+    return;
+  }
+
+  properties.forEach(property => {
+    const propertyElement = document.createElement('div');
+    propertyElement.className = 'property-item';
+    propertyElement.innerHTML = `
+      <h3>${property.Codigo || property.id}</h3>
+      <p><strong>Cidade:</strong> ${property.Cidade || property.city}</p>
+      <p><strong>Bairro:</strong> ${property.Bairro || property.neighborhood}</p>
+      <p><strong>Preço:</strong> R$ ${property.ValorVenda || property.price}</p>
+    `;
+    container.appendChild(propertyElement);
+  });
+}
 
 function formatCurrency(input) {
   // Remover tudo que não seja número, exceto a vírgula
@@ -70,102 +140,6 @@ function formatCurrency(input) {
 
   // Se houver um número válido, atualizar o valor no campo
   input.value = 'R$ ' + value;
-}
-
-
-
-
-
-// Função para buscar imóveis na sandbox
-function fetchPropertiesFromSandbox() {
-  const sandboxUrl = "https://sandbox-rest.vistahost.com.br/imoveis/listar?key=c9fdd79584fb8d369a6a579af1a8f681&showtotal=1&pesquisa=";
-  const pesquisaParams = {
-    fields: ["Codigo", "Categoria", "Bairro", "Cidade", "ValorVenda", "ValorLocacao", "Dormitorios", "Suites", "Vagas", "AreaTotal", "AreaPrivativa", "Caracteristicas", "InfraEstrutura"],
-    order: { Bairro: "asc" },
-    paginacao: { pagina: 1, quantidade: 10 }
-  };
-
-  // Construção da URL final para verificar erros
-  const finalUrl = sandboxUrl + encodeURIComponent(JSON.stringify(pesquisaParams));
-  console.log("URL gerada:", finalUrl);
-
-  fetch(finalUrl, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json' // Apenas o cabeçalho Accept é necessário para GET
-    }
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(sandboxProperties => {
-      console.log('Resposta da API:', sandboxProperties); // Depuração da resposta
-      displayProperties(sandboxProperties.imoveis, 'sandboxResultContainer'); // Exibindo os imóveis
-    })
-    .catch(error => {
-      console.error('Erro ao buscar imóveis da sandbox:', error);
-      alert('Erro ao buscar imóveis da sandbox. Tente novamente.');
-    });
-}
-
-// Função para exibir imóveis no container
-function displayProperties(properties, containerId) {
-  const resultContainer = document.getElementById(containerId);
-
-  // Garantir que o container existe antes de manipular
-  if (!resultContainer) {
-    console.error(`Elemento com ID '${containerId}' não encontrado.`);
-    return;
-  }
-
-  resultContainer.innerHTML = '';
-
-  if (properties && properties.length > 0) {
-    properties.forEach(property => {
-      resultContainer.innerHTML += `
-        <div class="property">
-          <h3>${property.Categoria || property.propertytype} - ${property.Cidade || property.city}, ${property.Bairro || property.neighborhood}</h3>
-          <p>Área: ${property.AreaTotal || property.area || 'N/A'} m²</p>
-          <p>Quartos: ${property.Dormitorios || property.bedrooms || 'N/A'}</p>
-          <p>Vagas de garagem: ${property.Vagas || property.parkingspaces || 'N/A'}</p>
-          <p>Preço: R$ ${property.ValorVenda || property.price ? parseFloat(property.ValorVenda || property.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A'}</p>
-          <button onclick="fetchPropertyDetails(${property.Codigo || property.id})">Ver Detalhes</button>
-          <p>Descrição: ${property.Caracteristicas || property.description || 'N/A'}</p>
-        </div>
-      `;
-    });
-  } else {
-    resultContainer.innerHTML = '<p>Nenhum imóvel encontrado.</p>';
-  }
-}
-
-
-
-// Função para exibir imóveis
-function displayProperties(properties, containerId) {
-  const resultContainer = document.getElementById(containerId);
-  resultContainer.innerHTML = '';
-
-  if (properties && properties.length > 0) {
-    properties.forEach(property => {
-      resultContainer.innerHTML += `
-        <div class="property">
-          <h3>${property.Categoria || property.propertytype} - ${property.Cidade || property.city}, ${property.Bairro || property.neighborhood}</h3>
-          <p>Área: ${property.AreaTotal || property.area || 'N/A'} m²</p>
-          <p>Quartos: ${property.Dormitorios || property.bedrooms || 'N/A'}</p>
-          <p>Vagas de garagem: ${property.Vagas || property.parkingspaces || 'N/A'}</p>
-          <p>Preço: R$ ${property.ValorVenda || property.price ? parseFloat(property.ValorVenda || property.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A'}</p>
-          <button onclick="fetchPropertyDetails(${property.Codigo || property.id})">Ver Detalhes</button>
-          <p>Descrição: ${property.Caracteristicas || property.description || 'N/A'}</p>
-        </div>
-      `;
-    });
-  } else {
-    resultContainer.innerHTML = '<p>Nenhum imóvel encontrado.</p>';
-  }
 }
 
 // Função para buscar detalhes de um imóvel específico na sandbox
