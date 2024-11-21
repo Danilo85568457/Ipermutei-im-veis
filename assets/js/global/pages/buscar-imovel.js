@@ -78,7 +78,7 @@ function formatCurrency(input) {
 
 // Função para buscar imóveis na sandbox
 function fetchPropertiesFromSandbox() {
-  const sandboxUrl = "http://sandbox-rest.vistahost.com.br/imoveis/listar?key=c9fdd79584fb8d369a6a579af1a8f681&showtotal=1&pesquisa=";
+  const sandboxUrl = "https://sandbox-rest.vistahost.com.br/imoveis/listar?key=c9fdd79584fb8d369a6a579af1a8f681&showtotal=1&pesquisa=";
   const pesquisaParams = {
     fields: ["Codigo", "Categoria", "Bairro", "Cidade", "ValorVenda", "ValorLocacao", "Dormitorios", "Suites", "Vagas", "AreaTotal", "AreaPrivativa", "Caracteristicas", "InfraEstrutura"],
     order: { Bairro: "asc" },
@@ -134,7 +134,7 @@ function fetchPropertyDetails(imovelId) {
     return;
   }
   
-  fetch(`http://sandbox-rest.vistahost.com.br/api/imoveis/detalhes?imovelId=${imovelId}`)
+  fetch(`https://sandbox-rest.vistahost.com.br/api/imoveis/detalhes?imovelId=${imovelId}`)
     .then(response => {
       if (!response.ok) throw new Error('Erro ao buscar detalhes do imóvel');
       return response.json();
