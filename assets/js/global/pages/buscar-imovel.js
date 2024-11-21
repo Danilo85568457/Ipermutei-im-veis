@@ -7,23 +7,19 @@ document.getElementById('property-search-form').addEventListener('submit', funct
   const minArea = document.getElementById('min-area').value;
   const bedrooms = document.getElementById('bedrooms').value;
   const parking = document.getElementById('parking').value;
-  
+
   // Obter valores e convertê-los para números
-const minPrice = parseFloat(
-  document.getElementById('min-price').value.replace(/[R$\s.]/g, '').replace(',', '.')
-) || null;
+  const minPrice = parseFloat(
+    document.getElementById('min-price').value.replace(/[R$\s.]/g, '').replace(',', '.')
+  ) || null;
 
-const maxPrice = parseFloat(
-  document.getElementById('max-price').value.replace(/[R$\s.]/g, '').replace(',', '.')
-) || null;
+  const maxPrice = parseFloat(
+    document.getElementById('max-price').value.replace(/[R$\s.]/g, '').replace(',', '.')
+  ) || null;
 
-
-
-
-// Exibir os valores formatados
-console.log('Min Price:', formattedMinPrice);
-console.log('Max Price:', formattedMaxPrice);
-
+  // Exibir os valores formatados
+  console.log('Min Price:', minPrice);
+  console.log('Max Price:', maxPrice);
 
   const queryParams = new URLSearchParams();
   if (propertyType) queryParams.append('propertyType', propertyType);
@@ -52,6 +48,7 @@ console.log('Max Price:', formattedMaxPrice);
   // Buscar imóveis da sandbox
   fetchPropertiesFromSandbox();
 });
+
 
 function formatCurrency(input) {
   // Remover tudo que não seja número, exceto a vírgula
