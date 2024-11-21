@@ -234,7 +234,7 @@ app.get('/api/buscar-imoveis', async (req, res) => {
 app.get('/api/imoveis/detalhes', async (req, res) => {
   const { imovelId } = req.query; // Captura o ID do imóvel a ser detalhado
   const apiKey = 'c9fdd79584fb8d369a6a579af1a8f681'; // Sua chave de API
-  const url = `http://sandbox-rest.vistahost.com.br/imoveis/detalhes?key=${apiKey}&imovel=${imovelId}`;
+  const url = `https://sandbox-rest.vistahost.com.br/imoveis/detalhes?key=${apiKey}&imovel=${imovelId}`;
 
   try {
     // Requisição ao servidor remoto para obter os detalhes do imóvel

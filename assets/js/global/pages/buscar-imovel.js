@@ -84,23 +84,64 @@ function fetchPropertiesFromSandbox() {
     order: { Bairro: "asc" },
     paginacao: { pagina: 1, quantidade: 10 }
   };
-  
-  fetch(sandboxUrl + encodeURIComponent(JSON.stringify(pesquisaParams)), {
-    method: 'GET',  // ou 'POST', dependendo do que a API exige
+
+  // Construção da URL final para verificar erros
+  const finalUrl = sandboxUrl + encodeURIComponent(JSON.stringify(pesquisaParams));
+  console.log("URL gerada:", finalUrl);
+
+  fetch(finalUrl, {
+    method: 'GET',
     headers: {
-      'Accept': 'application/json',  // Adicionando o cabeçalho Accept para solicitar JSON
-      'Content-Type': 'application/json'  // Certificando-se de que a requisição é enviada como JSON
+      'Accept': 'application/json' // Apenas o cabeçalho Accept é necessário para GET
     }
   })
-  .then(response => response.json())
-  .then(sandboxProperties => {
-    displayProperties(sandboxProperties.imoveis, 'sandboxResultContainer');  // Exibindo no container da sandbox
-  })
-  .catch(error => {
-    console.error('Erro ao buscar imóveis da sandbox:', error);
-    alert('Erro ao buscar imóveis da sandbox. Tente novamente.');
-  });
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(sandboxProperties => {
+      console.log('Resposta da API:', sandboxProperties); // Depuração da resposta
+      displayProperties(sandboxProperties.imoveis, 'sandboxResultContainer'); // Exibindo os imóveis
+    })
+    .catch(error => {
+      console.error('Erro ao buscar imóveis da sandbox:', error);
+      alert('Erro ao buscar imóveis da sandbox. Tente novamente.');
+    });
 }
+
+// Função para exibir imóveis no container
+function displayProperties(properties, containerId) {
+  const resultContainer = document.getElementById(containerId);
+
+  // Garantir que o container existe antes de manipular
+  if (!resultContainer) {
+    console.error(`Elemento com ID '${containerId}' não encontrado.`);
+    return;
+  }
+
+  resultContainer.innerHTML = '';
+
+  if (properties && properties.length > 0) {
+    properties.forEach(property => {
+      resultContainer.innerHTML += `
+        <div class="property">
+          <h3>${property.Categoria || property.propertytype} - ${property.Cidade || property.city}, ${property.Bairro || property.neighborhood}</h3>
+          <p>Área: ${property.AreaTotal || property.area || 'N/A'} m²</p>
+          <p>Quartos: ${property.Dormitorios || property.bedrooms || 'N/A'}</p>
+          <p>Vagas de garagem: ${property.Vagas || property.parkingspaces || 'N/A'}</p>
+          <p>Preço: R$ ${property.ValorVenda || property.price ? parseFloat(property.ValorVenda || property.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A'}</p>
+          <button onclick="fetchPropertyDetails(${property.Codigo || property.id})">Ver Detalhes</button>
+          <p>Descrição: ${property.Caracteristicas || property.description || 'N/A'}</p>
+        </div>
+      `;
+    });
+  } else {
+    resultContainer.innerHTML = '<p>Nenhum imóvel encontrado.</p>';
+  }
+}
+
 
 
 // Função para exibir imóveis
