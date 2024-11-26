@@ -139,7 +139,8 @@ function displayProperties(properties, containerId) {
   const container = document.getElementById(containerId);
   container.innerHTML = ''; // Limpa resultados anteriores
 
-  if (!properties.length) {
+  // Verificação de segurança para garantir que 'properties' seja um array
+  if (!Array.isArray(properties) || !properties.length) {
     container.innerHTML = '<p>Nenhum imóvel encontrado.</p>';
     return;
   }
@@ -147,15 +148,30 @@ function displayProperties(properties, containerId) {
   properties.forEach(property => {
     const propertyElement = document.createElement('div');
     propertyElement.className = 'property-item';
-    propertyElement.innerHTML = `
-      <h3>${property.Codigo || property.id}</h3>
-      <p><strong>Cidade:</strong> ${property.Cidade || property.city}</p>
-      <p><strong>Bairro:</strong> ${property.Bairro || property.neighborhood}</p>
-      <p><strong>Preço:</strong> R$ ${property.ValorVenda || property.price}</p>
-    `;
+
+    // Criação de elementos para evitar uso de innerHTML
+    const title = document.createElement('h3');
+    title.textContent = property.Codigo || property.id;
+
+    const cityParagraph = document.createElement('p');
+    cityParagraph.innerHTML = `<strong>Cidade:</strong> ${property.Cidade || property.city}`;
+
+    const neighborhoodParagraph = document.createElement('p');
+    neighborhoodParagraph.innerHTML = `<strong>Bairro:</strong> ${property.Bairro || property.neighborhood}`;
+
+    const priceParagraph = document.createElement('p');
+    priceParagraph.innerHTML = `<strong>Preço:</strong> R$ ${property.ValorVenda || property.price}`;
+
+    // Adicionando os elementos ao container
+    propertyElement.appendChild(title);
+    propertyElement.appendChild(cityParagraph);
+    propertyElement.appendChild(neighborhoodParagraph);
+    propertyElement.appendChild(priceParagraph);
+
     container.appendChild(propertyElement);
   });
 }
+
 
 function formatCurrency(input) {
   // Remover tudo que não seja número, exceto a vírgula
