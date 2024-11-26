@@ -159,10 +159,10 @@ app.get('/api/get-property', async (req, res) => {
 
 
 app.get('/api/buscar-imoveis', async (req, res) => {
-  const {propertyType,city, neighborhood, minArea, bedrooms, parking, minPrice, maxPrice } = req.query;
+  const {propertyType,city, neighborhood, minArea, maxArea, bedrooms, parking, minPrice, maxPrice } = req.query;
   
   // Log inicial dos parâmetros recebidos
-  console.error("Parâmetros de busca recebidos:", {propertyType, city, neighborhood, minArea, bedrooms, parking, minPrice, maxPrice });
+  console.error("Parâmetros de busca recebidos:", {propertyType, city, neighborhood, minArea, maxArea, bedrooms, parking, minPrice, maxPrice });
 
   try {
     // Query base para buscar imóveis
@@ -189,6 +189,11 @@ app.get('/api/buscar-imoveis', async (req, res) => {
       query += ` AND area >= $${values.length + 1}`;
       values.push(minArea);
       console.error(`Filtro de área mínima aplicado: ${minArea}`);
+    }
+    if (maxArea) {
+      query += ` AND area >= $${values.length + 1}`;
+      values.push(maxArea);
+      console.error(`Filtro de área maxima aplicado: ${maxArea}`);
     }
     if (bedrooms) {
       query += ` AND bedrooms >= $${values.length + 1}`;

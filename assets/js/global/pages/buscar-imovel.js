@@ -1,9 +1,9 @@
-// Função para retornar os parâmetros como um objeto (para uso na sandbox)
 function getSearchParamsAsObject() {
   const propertyType = document.getElementById('propertyType').value;
   const city = document.getElementById('city').value;
   const neighborhood = document.getElementById('neighborhood').value;
   const minArea = document.getElementById('min-area').value;
+  const maxArea = document.getElementById('max-area').value;  // Adicionando maxArea
   const bedrooms = document.getElementById('bedrooms').value;
   const parking = document.getElementById('parking').value;
 
@@ -17,17 +17,37 @@ function getSearchParamsAsObject() {
 
   const searchParams = {};
 
-  if (propertyType) searchParams.propertyType = propertyType;
-  if (city) searchParams.city = city;
-  if (neighborhood) searchParams.neighborhood = neighborhood;
-  if (minArea) searchParams.minArea = parseInt(minArea, 10);
-  if (bedrooms) searchParams.bedrooms = parseInt(bedrooms, 10);
-  if (parking) searchParams.parking = parseInt(parking, 10);
-  if (minPrice !== null) searchParams.minPrice = minPrice;
-  if (maxPrice !== null) searchParams.maxPrice = maxPrice;
+  // Ajuste dos parâmetros conforme a documentação da API
+  if (propertyType) searchParams.Categoria = propertyType;  // Ajuste para campo 'Categoria'
+  if (city) searchParams.Cidade = city;  // Ajuste para campo 'Cidade'
+  if (neighborhood) searchParams.Bairro = neighborhood;  // Ajuste para campo 'Bairro'
+
+  // Corrigindo AreaTotal para ser um array com valor mínimo e máximo
+  if (minArea && maxArea) {
+    searchParams.AreaTotal = [parseInt(minArea, 10), parseInt(maxArea, 10)];
+  } else if (minArea) {
+    searchParams.AreaTotal = [parseInt(minArea, 10), null];  // Apenas mínimo, sem máximo
+  } else if (maxArea) {
+    searchParams.AreaTotal = [null, parseInt(maxArea, 10)];  // Apenas máximo, sem mínimo
+  }
+
+  // Corrigindo ValorVenda para ser um array com valor mínimo e máximo
+  if (minPrice !== null && maxPrice !== null) {
+    searchParams.ValorVenda = [minPrice, maxPrice];
+  } else if (minPrice !== null) {
+    searchParams.ValorVenda = [minPrice, null];  // Apenas valor mínimo
+  } else if (maxPrice !== null) {
+    searchParams.ValorVenda = [null, maxPrice];  // Apenas valor máximo
+  }
+
+  // Ajustes para outros parâmetros
+  if (bedrooms) searchParams.Dormitorios = { $gte: parseInt(bedrooms, 10) };  // Min dormitórios
+  if (parking) searchParams.Vagas = { $gte: parseInt(parking, 10) };  // Min vagas
 
   return searchParams;
 }
+
+
 
 // Função para retornar os parâmetros como string (para uso no backend local)
 function getSearchParams() {
@@ -35,6 +55,7 @@ function getSearchParams() {
   const city = document.getElementById('city').value;
   const neighborhood = document.getElementById('neighborhood').value;
   const minArea = document.getElementById('min-area').value;
+  const maxArea = document.getElementById('max-area').value;
   const bedrooms = document.getElementById('bedrooms').value;
   const parking = document.getElementById('parking').value;
 
@@ -51,6 +72,7 @@ function getSearchParams() {
   if (city) queryParams.append('city', city);
   if (neighborhood) queryParams.append('neighborhood', neighborhood);
   if (minArea) queryParams.append('minArea', minArea);
+  if (maxArea) queryParams.append('maxArea', maxArea);
   if (bedrooms) queryParams.append('bedrooms', bedrooms);
   if (parking) queryParams.append('parking', parking);
   if (minPrice !== null) queryParams.append('minPrice', minPrice);
@@ -78,23 +100,38 @@ document.getElementById('property-search-form').addEventListener('submit', funct
       alert('Erro ao buscar imóveis do backend. Tente novamente.');
     });
 
-  // Parâmetros para a sandbox da CRM
-  const searchParamsForSandbox = getSearchParamsAsObject();
-  fetch(`https://sandbox-rest.vistahost.com.br/imoveis/listar?key=c9fdd79584fb8d369a6a579af1a8f681&showtotal=1&pesquisa=${encodeURIComponent(JSON.stringify({
-    fields: ["Codigo", "Categoria", "Bairro", "Cidade", "ValorVenda", "ValorLocacao", "Dormitorios", "Suites", "Vagas", "AreaTotal"],
-    filters: searchParamsForSandbox
-  }))}`)
-    .then(response => {
-      if (!response.ok) throw new Error('Erro ao buscar imóveis da sandbox');
-      return response.json();
-    })
-    .then(properties => {
-      displayProperties(properties.imoveis, 'sandboxResultContainer');
-    })
-    .catch(error => {
-      console.error('Erro ao buscar imóveis da sandbox:', error);
-      alert('Erro ao buscar imóveis da sandbox. Tente novamente.');
-    });
+ 
+ // Parâmetros para a sandbox da CRM
+const searchParamsForSandbox = getSearchParamsAsObject();
+console.log('Parâmetros para a sandbox:', searchParamsForSandbox);
+
+// URL gerada
+const url = `https://sandbox-rest.vistahost.com.br/imoveis/listar?key=c9fdd79584fb8d369a6a579af1a8f681&showtotal=1&pesquisa=${encodeURIComponent(JSON.stringify({
+  fields: ["Codigo", "Categoria", "Bairro", "Cidade", "ValorVenda", "ValorLocacao", "Dormitorios", "Suites", "Vagas", "AreaTotal"],
+  filter: searchParamsForSandbox
+}))}`;
+
+console.log('URL gerada:', url);
+
+// Requisição com o cabeçalho "Accept: application/json"
+fetch(url, {
+  method: 'GET',
+  headers: {
+    'Accept': 'application/json'
+  }
+})
+  .then(response => {
+    if (!response.ok) throw new Error('Erro ao buscar imóveis da sandbox');
+    return response.json();
+  })
+  .then(properties => {
+    displayProperties(properties.imoveis, 'sandboxResultContainer');
+  })
+  .catch(error => {
+    console.error('Erro ao buscar imóveis da sandbox:', error);
+    alert('Erro ao buscar imóveis da sandbox. Tente novamente.');
+  });
+
 });
 
 
