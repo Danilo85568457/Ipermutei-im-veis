@@ -1,9 +1,64 @@
+// Manipulador do envio do formulário
+document.getElementById('property-search-form').addEventListener('submit', function (event) {
+  event.preventDefault();
+
+  // Parâmetros para o backend local
+  const searchParams = getSearchParams();
+  console.log('Parâmetros enviados para o backend local:', searchParams); // Log dos parâmetros
+
+  fetch(`https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/buscar-imoveis?${searchParams}`)
+    .then(response => {
+      if (!response.ok) throw new Error('Erro ao buscar imóveis do backend');
+      return response.json();
+    })
+    .then(properties => {
+      console.log('Propriedades retornadas do backend local:', properties); // Log da resposta do backend local
+      displayProperties(properties, 'resultContainer');
+    })
+    .catch(error => {
+      console.error('Erro ao buscar imóveis do backend:', error);
+      alert('Erro ao buscar imóveis do backend. Tente novamente.');
+    });
+
+  // Parâmetros para a sandbox da CRM
+  const searchParamsForSandbox = getSearchParamsAsObject();
+  console.log('Parâmetros para a sandbox:', searchParamsForSandbox); // Log dos parâmetros da sandbox
+
+  // URL gerada
+  const url = `https://sandbox-rest.vistahost.com.br/imoveis/listar?key=c9fdd79584fb8d369a6a579af1a8f681&showtotal=1&pesquisa=${encodeURIComponent(JSON.stringify({
+    fields: ["Codigo", "Categoria", "Bairro", "Cidade", "ValorVenda", "ValorLocacao", "Dormitorios", "Suites", "Vagas", "AreaTotal"],
+    filter: searchParamsForSandbox
+  }))}`;
+
+  console.log('URL gerada para a sandbox:', url); // Log da URL gerada para a sandbox
+
+  // Requisição com o cabeçalho "Accept: application/json"
+  fetch(url, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json'
+    }
+  })
+    .then(response => {
+      if (!response.ok) throw new Error('Erro ao buscar imóveis da sandbox');
+      return response.json();
+    })
+    .then(properties => {
+      console.log('Propriedades retornadas da sandbox:', properties); // Log das propriedades da resposta da sandbox
+      displayProperties(properties.imoveis, 'sandboxResultContainer');
+    })
+    .catch(error => {
+      console.error('Erro ao buscar imóveis da sandbox:', error);
+      alert('Erro ao buscar imóveis da sandbox. Tente novamente.');
+    });
+});
+
 function getSearchParamsAsObject() {
   const propertyType = document.getElementById('propertyType').value;
   const city = document.getElementById('city').value;
   const neighborhood = document.getElementById('neighborhood').value;
   const minArea = document.getElementById('min-area').value;
-  const maxArea = document.getElementById('max-area').value;  // Adicionando maxArea
+  const maxArea = document.getElementById('max-area').value;
   const bedrooms = document.getElementById('bedrooms').value;
   const parking = document.getElementById('parking').value;
 
@@ -18,10 +73,18 @@ function getSearchParamsAsObject() {
   const searchParams = {};
 
   // Ajuste dos parâmetros conforme a documentação da API
-  if (propertyType) searchParams.Categoria = propertyType;  // Ajuste para campo 'Categoria'
-  if (city) searchParams.Cidade = city;  // Ajuste para campo 'Cidade'
-  if (neighborhood) searchParams.Bairro = neighborhood;  // Ajuste para campo 'Bairro'
+  if (propertyType) {
+    searchParams.Categoria = propertyType;
+  }
+  if (city) {
+    searchParams.Cidade = city;
+  }
+  if (neighborhood) {
+    searchParams.Bairro = neighborhood;
+  }
 
+  // Log para verificar os valores de área
+  console.log('Min Área:', minArea, 'Max Área:', maxArea);
   // Corrigindo AreaTotal para ser um array com valor mínimo e máximo
   if (minArea && maxArea) {
     searchParams.AreaTotal = [parseInt(minArea, 10), parseInt(maxArea, 10)];
@@ -31,6 +94,8 @@ function getSearchParamsAsObject() {
     searchParams.AreaTotal = [null, parseInt(maxArea, 10)];  // Apenas máximo, sem mínimo
   }
 
+  // Log para verificar os valores de preço
+  console.log('Min Preço:', minPrice, 'Max Preço:', maxPrice);
   // Corrigindo ValorVenda para ser um array com valor mínimo e máximo
   if (minPrice !== null && maxPrice !== null) {
     searchParams.ValorVenda = [minPrice, maxPrice];
@@ -41,12 +106,17 @@ function getSearchParamsAsObject() {
   }
 
   // Ajustes para outros parâmetros
-  if (bedrooms) searchParams.Dormitorios = { $gte: parseInt(bedrooms, 10) };  // Min dormitórios
-  if (parking) searchParams.Vagas = { $gte: parseInt(parking, 10) };  // Min vagas
+  if (bedrooms) {
+    searchParams.Dormitorios = { $gte: parseInt(bedrooms, 10) };  // Min dormitórios
+  }
+  if (parking) {
+    searchParams.Vagas = { $gte: parseInt(parking, 10) };  // Min vagas
+  }
 
+  // Log dos parâmetros finais
+  console.log('Parâmetros finais para a pesquisa:', searchParams);
   return searchParams;
 }
-
 
 
 // Função para retornar os parâmetros como string (para uso no backend local)
@@ -80,59 +150,6 @@ function getSearchParams() {
 
   return queryParams.toString();
 }
-
-// Manipulador do envio do formulário
-document.getElementById('property-search-form').addEventListener('submit', function (event) {
-  event.preventDefault();
-
-  // Parâmetros para o backend local
-  const searchParams = getSearchParams();
-  fetch(`https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/buscar-imoveis?${searchParams}`)
-    .then(response => {
-      if (!response.ok) throw new Error('Erro ao buscar imóveis do backend');
-      return response.json();
-    })
-    .then(properties => {
-      displayProperties(properties, 'resultContainer');
-    })
-    .catch(error => {
-      console.error('Erro ao buscar imóveis do backend:', error);
-      alert('Erro ao buscar imóveis do backend. Tente novamente.');
-    });
-
- 
- // Parâmetros para a sandbox da CRM
-const searchParamsForSandbox = getSearchParamsAsObject();
-console.log('Parâmetros para a sandbox:', searchParamsForSandbox);
-
-// URL gerada
-const url = `https://sandbox-rest.vistahost.com.br/imoveis/listar?key=c9fdd79584fb8d369a6a579af1a8f681&showtotal=1&pesquisa=${encodeURIComponent(JSON.stringify({
-  fields: ["Codigo", "Categoria", "Bairro", "Cidade", "ValorVenda", "ValorLocacao", "Dormitorios", "Suites", "Vagas", "AreaTotal"],
-  filter: searchParamsForSandbox
-}))}`;
-
-console.log('URL gerada:', url);
-
-// Requisição com o cabeçalho "Accept: application/json"
-fetch(url, {
-  method: 'GET',
-  headers: {
-    'Accept': 'application/json'
-  }
-})
-  .then(response => {
-    if (!response.ok) throw new Error('Erro ao buscar imóveis da sandbox');
-    return response.json();
-  })
-  .then(properties => {
-    displayProperties(properties.imoveis, 'sandboxResultContainer');
-  })
-  .catch(error => {
-    console.error('Erro ao buscar imóveis da sandbox:', error);
-    alert('Erro ao buscar imóveis da sandbox. Tente novamente.');
-  });
-
-});
 
 
 function displayProperties(properties, containerId) {
