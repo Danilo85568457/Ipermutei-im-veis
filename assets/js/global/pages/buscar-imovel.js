@@ -38,20 +38,26 @@ document.getElementById('property-search-form').addEventListener('submit', funct
 
   console.log('URL gerada para a sandbox:', url);
 
-  fetch(url, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json'
+  console.log('URL gerada para a sandbox:', url);
+
+fetch(url, {
+  method: 'GET',
+  headers: {
+    'Accept': 'application/json'
+  }
+})
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Erro ao buscar imóveis: ${response.status}`);
     }
+    return response.json(); // Converte a resposta para JSON
   })
   .then(data => {
-    // Log dos dados originais para análise
     console.log('Dados originais:', data);
 
-    // Transforme o objeto de propriedades em um array
-    const properties = Object.values(data);
+    // Transforme o objeto de propriedades em um array, caso necessário
+    const properties = Array.isArray(data) ? data : Object.values(data);
 
-    // Log para verificar a estrutura transformada
     console.log('Imóveis formatados como array:', properties);
 
     // Chame a função de exibição de imóveis
@@ -61,6 +67,7 @@ document.getElementById('property-search-form').addEventListener('submit', funct
     console.error('Erro ao buscar imóveis da sandbox:', error);
     alert('Erro ao buscar imóveis da sandbox. Tente novamente.');
   });
+
 
   
 });
