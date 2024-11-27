@@ -2,37 +2,42 @@
 document.getElementById('property-search-form').addEventListener('submit', function (event) {
   event.preventDefault();
 
-  // Parâmetros para o backend local
-  const searchParams = getSearchParams();
-  console.log('Parâmetros enviados para o backend local:', searchParams); // Log dos parâmetros
+  const isSandboxTestMode = true; // Altere para false quando não estiver testando a sandbox
 
-  fetch(`https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/buscar-imoveis?${searchParams}`)
-    .then(response => {
-      if (!response.ok) throw new Error('Erro ao buscar imóveis do backend');
-      return response.json();
-    })
-    .then(properties => {
-      console.log('Propriedades retornadas do backend local:', properties); // Log da resposta do backend local
-      displayProperties(properties, 'resultContainer');
-    })
-    .catch(error => {
-      console.error('Erro ao buscar imóveis do backend:', error);
-      alert('Erro ao buscar imóveis do backend. Tente novamente.');
-    });
+  if (!isSandboxTestMode) {
+    // Fluxo principal do código para o backend local
+    const searchParams = getSearchParams();
+    console.log('Parâmetros enviados para o backend local:', searchParams); // Log dos parâmetros
 
-  // Parâmetros para a sandbox da CRM
-  const searchParamsForSandbox = getSearchParamsAsObject();
-  console.log('Parâmetros para a sandbox:', searchParamsForSandbox); // Log dos parâmetros da sandbox
+    fetch(`https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/buscar-imoveis?${searchParams}`)
+      .then(response => {
+        if (!response.ok) throw new Error('Erro ao buscar imóveis do backend');
+        return response.json();
+      })
+      .then(properties => {
+        console.log('Propriedades retornadas do backend local:', properties);
+        displayProperties(properties, 'resultContainer');
+      })
+      .catch(error => {
+        console.error('Erro ao buscar imóveis do backend:', error);
+        alert('Erro ao buscar imóveis do backend. Tente novamente.');
+      });
+  }
 
-  // URL gerada
+  // Fluxo para a sandbox
+  const searchParamsForSandbox = isSandboxTestMode 
+    ? getSimplifiedSearchParams() 
+    : getSearchParamsAsObject();
+
+  console.log('Parâmetros para a sandbox:', searchParamsForSandbox);
+
   const url = `https://sandbox-rest.vistahost.com.br/imoveis/listar?key=c9fdd79584fb8d369a6a579af1a8f681&showtotal=1&pesquisa=${encodeURIComponent(JSON.stringify({
     fields: ["Codigo", "Categoria", "Bairro", "Cidade", "ValorVenda", "ValorLocacao", "Dormitorios", "Suites", "Vagas", "AreaTotal"],
     filter: searchParamsForSandbox
   }))}`;
 
-  console.log('URL gerada para a sandbox:', url); // Log da URL gerada para a sandbox
+  console.log('URL gerada para a sandbox:', url);
 
-  // Requisição com o cabeçalho "Accept: application/json"
   fetch(url, {
     method: 'GET',
     headers: {
@@ -44,7 +49,7 @@ document.getElementById('property-search-form').addEventListener('submit', funct
       return response.json();
     })
     .then(properties => {
-      console.log('Propriedades retornadas da sandbox:', properties); // Log das propriedades da resposta da sandbox
+      console.log('Propriedades retornadas da sandbox:', properties);
       displayProperties(properties.imoveis, 'sandboxResultContainer');
     })
     .catch(error => {
@@ -52,6 +57,24 @@ document.getElementById('property-search-form').addEventListener('submit', funct
       alert('Erro ao buscar imóveis da sandbox. Tente novamente.');
     });
 });
+
+function getSimplifiedSearchParams() {
+  const propertyType = document.getElementById('propertyType').value;
+  const city = document.getElementById('city').value;
+
+  const searchParams = {};
+
+  if (propertyType) {
+    searchParams.Categoria = propertyType;
+  }
+  if (city) {
+    searchParams.Cidade = city;
+  }
+
+  console.log('Parâmetros simplificados para a sandbox:', searchParams);
+  return searchParams;
+}
+
 
 function getSearchParamsAsObject() {
   const propertyType = document.getElementById('propertyType').value;
