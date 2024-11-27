@@ -44,18 +44,20 @@ document.getElementById('property-search-form').addEventListener('submit', funct
       'Accept': 'application/json'
     }
   })
-    .then(response => {
-      if (!response.ok) throw new Error('Erro ao buscar imóveis da sandbox');
-      return response.json();
-    })
-    .then(properties => {
-      console.log('Propriedades retornadas da sandbox:', properties);
-      displayProperties(properties.imoveis, 'sandboxResultContainer');
-    })
-    .catch(error => {
-      console.error('Erro ao buscar imóveis da sandbox:', error);
-      alert('Erro ao buscar imóveis da sandbox. Tente novamente.');
-    });
+  .then(response => {
+    if (!response.ok) throw new Error('Erro ao buscar imóveis da sandbox');
+    return response.json(); // Retorna o JSON completo da resposta
+  })
+  .then(data => {
+    // Aqui acessamos o array de imóveis retornado
+    const properties = data.imoveis; // Certifique-se de que 'imoveis' é a chave correta no objeto retornado
+    displayProperties(properties, 'sandboxResultContainer');
+  })
+  .catch(error => {
+    console.error('Erro ao buscar imóveis da sandbox:', error);
+    alert('Erro ao buscar imóveis da sandbox. Tente novamente.');
+  });
+  
 });
 
 function getSimplifiedSearchParams() {
@@ -179,7 +181,7 @@ function displayProperties(properties, containerId) {
   const container = document.getElementById(containerId);
   container.innerHTML = ''; // Limpa resultados anteriores
 
-  // Verificação de segurança para garantir que 'properties' seja um array
+  // Verificação para garantir que 'properties' seja um array válido
   if (!Array.isArray(properties) || !properties.length) {
     container.innerHTML = '<p>Nenhum imóvel encontrado.</p>';
     return;
@@ -189,24 +191,52 @@ function displayProperties(properties, containerId) {
     const propertyElement = document.createElement('div');
     propertyElement.className = 'property-item';
 
-    // Criação de elementos para evitar uso de innerHTML
+    // Título com o código do imóvel
     const title = document.createElement('h3');
-    title.textContent = property.Codigo || property.id;
+    title.textContent = `${property.Categoria || 'Imóvel'} - Código: ${property.Codigo}`;
 
+    // Cidade
     const cityParagraph = document.createElement('p');
-    cityParagraph.innerHTML = `<strong>Cidade:</strong> ${property.Cidade || property.city}`;
+    cityParagraph.innerHTML = `<strong>Cidade:</strong> ${property.Cidade || 'N/A'}`;
 
+    // Bairro
     const neighborhoodParagraph = document.createElement('p');
-    neighborhoodParagraph.innerHTML = `<strong>Bairro:</strong> ${property.Bairro || property.neighborhood}`;
+    neighborhoodParagraph.innerHTML = `<strong>Bairro:</strong> ${property.Bairro || 'N/A'}`;
 
+    // Preço de venda
     const priceParagraph = document.createElement('p');
-    priceParagraph.innerHTML = `<strong>Preço:</strong> R$ ${property.ValorVenda || property.price}`;
+    priceParagraph.innerHTML = `<strong>Preço de Venda:</strong> R$ ${property.ValorVenda || 'N/A'}`;
+
+    // Preço de locação
+    const rentParagraph = document.createElement('p');
+    rentParagraph.innerHTML = `<strong>Preço de Locação:</strong> R$ ${property.ValorLocacao || 'N/A'}`;
+
+    // Área Total
+    const areaParagraph = document.createElement('p');
+    areaParagraph.innerHTML = `<strong>Área Total:</strong> ${property.AreaTotal || 'N/A'} m²`;
+
+    // Dormitórios
+    const bedroomsParagraph = document.createElement('p');
+    bedroomsParagraph.innerHTML = `<strong>Dormitórios:</strong> ${property.Dormitorios || 'N/A'}`;
+
+    // Suítes
+    const suitesParagraph = document.createElement('p');
+    suitesParagraph.innerHTML = `<strong>Suítes:</strong> ${property.Suites || 'N/A'}`;
+
+    // Vagas
+    const parkingParagraph = document.createElement('p');
+    parkingParagraph.innerHTML = `<strong>Vagas:</strong> ${property.Vagas || 'N/A'}`;
 
     // Adicionando os elementos ao container
     propertyElement.appendChild(title);
     propertyElement.appendChild(cityParagraph);
     propertyElement.appendChild(neighborhoodParagraph);
     propertyElement.appendChild(priceParagraph);
+    propertyElement.appendChild(rentParagraph);
+    propertyElement.appendChild(areaParagraph);
+    propertyElement.appendChild(bedroomsParagraph);
+    propertyElement.appendChild(suitesParagraph);
+    propertyElement.appendChild(parkingParagraph);
 
     container.appendChild(propertyElement);
   });
