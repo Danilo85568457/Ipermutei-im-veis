@@ -44,19 +44,24 @@ document.getElementById('property-search-form').addEventListener('submit', funct
       'Accept': 'application/json'
     }
   })
-  .then(response => {
-    if (!response.ok) throw new Error('Erro ao buscar imóveis da sandbox');
-    return response.json(); // Retorna o JSON completo da resposta
-  })
   .then(data => {
-    // Aqui acessamos o array de imóveis retornado
-    const properties = data.imoveis; // Certifique-se de que 'imoveis' é a chave correta no objeto retornado
+    // Log dos dados originais para análise
+    console.log('Dados originais:', data);
+
+    // Transforme o objeto de propriedades em um array
+    const properties = Object.values(data);
+
+    // Log para verificar a estrutura transformada
+    console.log('Imóveis formatados como array:', properties);
+
+    // Chame a função de exibição de imóveis
     displayProperties(properties, 'sandboxResultContainer');
   })
   .catch(error => {
     console.error('Erro ao buscar imóveis da sandbox:', error);
     alert('Erro ao buscar imóveis da sandbox. Tente novamente.');
   });
+
   
 });
 
@@ -76,7 +81,6 @@ function getSimplifiedSearchParams() {
   console.log('Parâmetros simplificados para a sandbox:', searchParams);
   return searchParams;
 }
-
 
 function getSearchParamsAsObject() {
   const propertyType = document.getElementById('propertyType').value;
@@ -142,41 +146,6 @@ function getSearchParamsAsObject() {
   console.log('Parâmetros finais para a pesquisa:', searchParams);
   return searchParams;
 }
-
-
-// Função para retornar os parâmetros como string (para uso no backend local)
-function getSearchParams() {
-  const propertyType = document.getElementById('propertyType').value;
-  const city = document.getElementById('city').value;
-  const neighborhood = document.getElementById('neighborhood').value;
-  const minArea = document.getElementById('min-area').value;
-  const maxArea = document.getElementById('max-area').value;
-  const bedrooms = document.getElementById('bedrooms').value;
-  const parking = document.getElementById('parking').value;
-
-  const minPrice = parseFloat(
-    document.getElementById('min-price').value.replace(/[R$\s.]/g, '').replace(',', '.')
-  ) || null;
-
-  const maxPrice = parseFloat(
-    document.getElementById('max-price').value.replace(/[R$\s.]/g, '').replace(',', '.')
-  ) || null;
-
-  const queryParams = new URLSearchParams();
-  if (propertyType) queryParams.append('propertyType', propertyType);
-  if (city) queryParams.append('city', city);
-  if (neighborhood) queryParams.append('neighborhood', neighborhood);
-  if (minArea) queryParams.append('minArea', minArea);
-  if (maxArea) queryParams.append('maxArea', maxArea);
-  if (bedrooms) queryParams.append('bedrooms', bedrooms);
-  if (parking) queryParams.append('parking', parking);
-  if (minPrice !== null) queryParams.append('minPrice', minPrice);
-  if (maxPrice !== null) queryParams.append('maxPrice', maxPrice);
-
-  return queryParams.toString();
-}
-
-
 function displayProperties(properties, containerId) {
   const container = document.getElementById(containerId);
   container.innerHTML = ''; // Limpa resultados anteriores
@@ -242,6 +211,37 @@ function displayProperties(properties, containerId) {
   });
 }
 
+// Função para retornar os parâmetros como string (para uso no backend local)
+function getSearchParams() {
+  const propertyType = document.getElementById('propertyType').value;
+  const city = document.getElementById('city').value;
+  const neighborhood = document.getElementById('neighborhood').value;
+  const minArea = document.getElementById('min-area').value;
+  const maxArea = document.getElementById('max-area').value;
+  const bedrooms = document.getElementById('bedrooms').value;
+  const parking = document.getElementById('parking').value;
+
+  const minPrice = parseFloat(
+    document.getElementById('min-price').value.replace(/[R$\s.]/g, '').replace(',', '.')
+  ) || null;
+
+  const maxPrice = parseFloat(
+    document.getElementById('max-price').value.replace(/[R$\s.]/g, '').replace(',', '.')
+  ) || null;
+
+  const queryParams = new URLSearchParams();
+  if (propertyType) queryParams.append('propertyType', propertyType);
+  if (city) queryParams.append('city', city);
+  if (neighborhood) queryParams.append('neighborhood', neighborhood);
+  if (minArea) queryParams.append('minArea', minArea);
+  if (maxArea) queryParams.append('maxArea', maxArea);
+  if (bedrooms) queryParams.append('bedrooms', bedrooms);
+  if (parking) queryParams.append('parking', parking);
+  if (minPrice !== null) queryParams.append('minPrice', minPrice);
+  if (maxPrice !== null) queryParams.append('maxPrice', maxPrice);
+
+  return queryParams.toString();
+}
 
 function formatCurrency(input) {
   // Remover tudo que não seja número, exceto a vírgula
