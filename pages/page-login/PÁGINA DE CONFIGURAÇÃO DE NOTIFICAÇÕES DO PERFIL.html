@@ -1,0 +1,327 @@
+<html><head><base href="https://websim.ai/settings"><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configurações - ipermutei</title>
+<style>
+:root {
+  --primary-color: #4E1382;
+  --secondary-color: #9747FF;
+  --background-color: #F8F9FE;
+  --text-color: #333;
+  --error-color: #dc3545;
+  --success-color: #28a745;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 800px;
+  margin: 80px auto;
+  padding: 0 20px;
+}
+
+.settings-card {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+}
+
+.settings-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.settings-header h1 {
+  color: var(--primary-color);
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.settings-section {
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #eee;
+}
+
+.settings-section:last-child {
+  border-bottom: none;
+}
+
+.settings-section h2 {
+  color: var(--primary-color);
+  margin-bottom: 20px;
+}
+
+.settings-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: var(--background-color);
+  border-radius: 8px;
+}
+
+.option-label {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.option-label i {
+  color: var(--secondary-color);
+  font-size: 1.2em;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--secondary-color);
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.danger-zone {
+  background: #fff5f5;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--error-color);
+}
+
+.danger-zone h3 {
+  color: var(--error-color);
+  margin-bottom: 15px;
+}
+
+.delete-account-btn {
+  background-color: var(--error-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.delete-account-btn:hover {
+  background-color: #c82333;
+}
+
+.save-btn {
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+  display: block;
+  width: 100%;
+  margin-top: 30px;
+  transition: all 0.3s ease;
+}
+
+.save-btn:hover {
+  background-color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .container {
+    margin: 40px auto;
+  }
+  
+  .settings-card {
+    padding: 20px;
+  }
+  
+  .settings-option {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+  <div class="settings-card">
+    <div class="settings-header">
+      <h1>Configurações</h1>
+      <p>Gerencie suas preferências e configurações de conta</p>
+    </div>
+    
+    <div class="settings-section">
+      <h2>Notificações</h2>
+      <div class="settings-option">
+        <div class="option-label">
+          <i class="fas fa-envelope"></i>
+          <div>
+            <h3>Notificações por Email</h3>
+            <p>Receba atualizações sobre suas propriedades</p>
+          </div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="settings-option">
+        <div class="option-label">
+          <i class="fas fa-mobile-alt"></i>
+          <div>
+            <h3>Notificações Push</h3>
+            <p>Receba notificações em tempo real</p>
+          </div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+    
+    <div class="settings-section">
+      <h2>Privacidade</h2>
+      <div class="settings-option">
+        <div class="option-label">
+          <i class="fas fa-user-shield"></i>
+          <div>
+            <h3>Perfil Público</h3>
+            <p>Tornar seu perfil visível para outros usuários</p>
+          </div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="settings-option">
+        <div class="option-label">
+          <i class="fas fa-map-marker-alt"></i>
+          <div>
+            <h3>Localização</h3>
+            <p>Mostrar sua localização no perfil</p>
+          </div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+    
+    <div class="settings-section">
+      <h2>Zona de Perigo</h2>
+      <div class="danger-zone">
+        <h3>Excluir Conta</h3>
+        <p>Essa ação não pode ser desfeita. Todos os seus dados serão permanentemente excluídos.</p>
+        <button class="delete-account-btn" onclick="confirmDeleteAccount()">
+          <i class="fas fa-trash-alt"></i>
+          Excluir minha conta
+        </button>
+      </div>
+    </div>
+    
+    <button class="save-btn" onclick="saveSettings()">
+      Salvar Alterações
+    </button>
+  </div>
+</div>
+
+<script>
+async function loadUserSettings() {
+  try {
+    const user = await window.websim.getUser();
+    if (user) {
+      // Load user settings here
+      console.log('Loading settings for user:', user.username);
+    }
+  } catch (error) {
+    console.error('Error loading user settings:', error);
+  }
+}
+
+function saveSettings() {
+  // Get all toggle states
+  const emailNotifications = document.querySelector('input[type="checkbox"]').checked;
+  const pushNotifications = document.querySelectorAll('input[type="checkbox"]')[1].checked;
+  const publicProfile = document.querySelectorAll('input[type="checkbox"]')[2].checked;
+  const showLocation = document.querySelectorAll('input[type="checkbox"]')[3].checked;
+  
+  const settings = {
+    emailNotifications,
+    pushNotifications,
+    publicProfile,
+    showLocation
+  };
+  
+  console.log('Saving settings:', settings);
+  alert('Configurações salvas com sucesso!');
+}
+
+function confirmDeleteAccount() {
+  if (confirm('Tem certeza que deseja excluir sua conta? Essa ação não pode ser desfeita.')) {
+    console.log('Account deletion requested');
+    alert('Por favor, entre em contato com o suporte para confirmar a exclusão da sua conta.');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadUserSettings);
+</script>
+
+</body></html>

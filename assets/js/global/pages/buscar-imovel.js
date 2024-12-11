@@ -32,11 +32,21 @@ document.getElementById('property-search-form').addEventListener('submit', funct
   console.log('Parâmetros para a sandbox:', searchParamsForSandbox);
 
   const url = `https://sandbox-rest.vistahost.com.br/imoveis/listar?key=c9fdd79584fb8d369a6a579af1a8f681&showtotal=1&pesquisa=${encodeURIComponent(JSON.stringify({
-    fields: ["Codigo", "Categoria", "Bairro", "Cidade", "ValorVenda", "ValorLocacao", "Dormitorios", "Suites", "Vagas", "AreaTotal"],
+    fields: [
+      "Codigo", 
+      "Categoria", 
+      "Bairro", 
+      "Cidade", 
+      "ValorVenda", 
+      "ValorLocacao", 
+      "Dormitorios", 
+      "Suites", 
+      "Vagas", 
+      "AreaTotal", 
+    ],
     filter: searchParamsForSandbox
   }))}`;
-
-  console.log('URL gerada para a sandbox:', url);
+  
 
   console.log('URL gerada para a sandbox:', url);
 
@@ -153,6 +163,44 @@ function getSearchParamsAsObject() {
   console.log('Parâmetros finais para a pesquisa:', searchParams);
   return searchParams;
 }
+
+function fetchPropertyDetailsAndAddImages(property) {
+  const detailsUrl = `https://sandbox-rest.vistahost.com.br/imoveis/detalhes?key=c9fdd79584fb8d369a6a579af1a8f681&imovel=${property.Codigo}`;
+  
+  fetch(detailsUrl, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json'
+    }
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar detalhes do imóvel ${property.Codigo}: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(details => {
+      if (details && details.Foto && details.Foto.length > 0) {
+        const container = document.getElementById('sandboxResultContainer');
+        const propertyElement = container.querySelector(`[data-codigo="${property.Codigo}"]`);
+
+        if (propertyElement) {
+          const imageElement = document.createElement('img');
+          imageElement.src = details.Foto[0].FotoPequena || details.Foto[0].Foto; // Use a imagem pequena, se disponível
+          imageElement.alt = `Foto do imóvel ${property.Codigo}`;
+          imageElement.style.width = '100%';
+          imageElement.style.height = 'auto';
+          propertyElement.prepend(imageElement); // Adiciona a imagem no início do bloco
+        }
+      } else {
+        console.warn(`Sem fotos disponíveis para o imóvel ${property.Codigo}`);
+      }
+    })
+    .catch(error => {
+      console.error('Erro ao buscar detalhes do imóvel:', error);
+    });
+}
+
 function displayProperties(properties, containerId) {
   const container = document.getElementById(containerId);
   container.innerHTML = ''; // Limpa resultados anteriores
@@ -166,6 +214,7 @@ function displayProperties(properties, containerId) {
   properties.forEach(property => {
     const propertyElement = document.createElement('div');
     propertyElement.className = 'property-item';
+    propertyElement.setAttribute('data-codigo', property.Codigo); // Identificação única para cada imóvel
 
     // Título com o código do imóvel
     const title = document.createElement('h3');
@@ -203,6 +252,18 @@ function displayProperties(properties, containerId) {
     const parkingParagraph = document.createElement('p');
     parkingParagraph.innerHTML = `<strong>Vagas:</strong> ${property.Vagas || 'N/A'}`;
 
+    // Exibir imagem principal (se disponível)
+    if (property.Foto && Array.isArray(property.Foto) && property.Foto.length > 0) {
+      const imageElement = document.createElement('img');
+      imageElement.src = property.Foto[0].FotoPequena || property.Foto[0].Foto; // Usa a imagem pequena ou a principal
+      imageElement.alt = `Foto do imóvel ${property.Codigo}`;
+      imageElement.style.width = '100%'; // Ajuste conforme necessário
+      imageElement.style.height = 'auto'; // Mantém proporção
+      propertyElement.appendChild(imageElement);
+    } else {
+      console.warn(`Imagem não encontrada para o imóvel com código: ${property.Codigo}`);
+    }
+
     // Adicionando os elementos ao container
     propertyElement.appendChild(title);
     propertyElement.appendChild(cityParagraph);
@@ -217,6 +278,8 @@ function displayProperties(properties, containerId) {
     container.appendChild(propertyElement);
   });
 }
+
+
 
 // Função para retornar os parâmetros como string (para uso no backend local)
 function getSearchParams() {
@@ -279,7 +342,7 @@ function fetchPropertyDetails(imovelId) {
     return;
   }
   
-  fetch(`https://sandbox-rest.vistahost.com.br/api/imoveis/detalhes?imovelId=${imovelId}`)
+  fetch(`http://sandbox-rest.vistahost.com.br/imoveis/detalhes?key=c9fdd79584fb8d369a6a579af1a8f681&imovel=1650&pesquisa={"fields":["Codigo","Categoria","Bairro","Cidade","ValorVenda","ValorLocacao","Dormitorios","Suites","Vagas","AreaTotal","AreaPrivativa","Caracteristicas","InfraEstrutura"]}${imovelId}`)
     .then(response => {
       if (!response.ok) throw new Error('Erro ao buscar detalhes do imóvel');
       return response.json();

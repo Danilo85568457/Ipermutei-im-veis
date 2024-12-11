@@ -78,8 +78,16 @@ function formatarPreco(preco) {
 // Front-end
 
 document.getElementById('propertyForm').addEventListener('submit', function(event) {
-  console.log('Formulário enviado');
   event.preventDefault();
+
+   // Verificar se o usuário está autenticado
+   const isAuthenticated = localStorage.getItem('authToken'); // Supondo que o token de login é salvo no localStorage
+
+   if (!isAuthenticated) {
+    alert('Você precisa estar logado para cadastrar um imóvel.');
+    window.location.href = '/pages/login.html'; // Redirecionar para a página de login
+    return;
+}
 
   // Captura os arquivos de foto
   const photoInput = document.getElementById('photoInput');
@@ -115,7 +123,10 @@ document.getElementById('propertyForm').addEventListener('submit', function(even
   // Faz a requisição para o servidor
   fetch('https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/cadastro-imovel', {
     method: 'POST',
-    body: formData, // O FormData já define o cabeçalho 'multipart/form-data'
+    headers: {
+      Authorization: `Bearer ${isAuthenticated}`, // Envia o token no cabeçalho
+  },
+    body: formData, 
   })
   .then(response => {
     console.log('Resposta do servidor:', response); // Log para verificar a resposta do servidor
