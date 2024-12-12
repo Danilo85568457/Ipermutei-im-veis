@@ -7,7 +7,7 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
     const password = document.getElementById('password').value;
 
     // Fazer a requisição ao backend
-    fetch('https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/buscar-imoveis?/api/login', {
+    fetch('https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

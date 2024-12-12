@@ -21,7 +21,7 @@ document.getElementById('registration-form').addEventListener('submit', function
     }
 
     // Enviar dados para o backend
-    fetch('https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/buscar-imoveis?/api/register', {
+    fetch('https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
