@@ -167,7 +167,6 @@ app.post('/api/login', async (req, res) => {
 
 
 app.post('/api/register', async (req, res) => {
-  res.json({ message: 'Endpoint funcionando!' });
     const { name, email, telefone, tipoConta, password } = req.body;
 
     try {

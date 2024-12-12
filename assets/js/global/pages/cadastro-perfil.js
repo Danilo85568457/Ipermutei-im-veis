@@ -38,7 +38,7 @@ document.getElementById('registration-form').addEventListener('submit', function
             // Verifica se o cadastro foi bem-sucedido
             if (response.ok) {
                 alert('Cadastro realizado com sucesso! Você será redirecionado para a página de login.');
-                window.location.href = '/login.html'; // Redireciona para a página de login
+                window.location.href = 'login.html'; // Redireciona para a página de login
             } else {
                 alert(data.message || 'Erro no cadastro.');
             }
