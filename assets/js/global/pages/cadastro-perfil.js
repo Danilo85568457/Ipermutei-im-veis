@@ -29,15 +29,25 @@ document.getElementById('registration-form').addEventListener('submit', function
         body: JSON.stringify({ name, email, telefone, tipoConta, password }),
     })
         .then(async (response) => {
-            const text = await response.text(); // Obtenha o texto bruto da resposta
+            const text = await response.text();
             console.log('Resposta do servidor:', text);
-            const data = JSON.parse(text); // Tente converter para JSON
-            console.log('Dados convertidos:', data);
-            return data;
+    
+            // Tenta converter para JSON
+            const data = JSON.parse(text);
+    
+            // Verifica se o cadastro foi bem-sucedido
+            if (response.ok) {
+                alert('Cadastro realizado com sucesso! Você será redirecionado para a página de login.');
+                window.location.href = '/login.html'; // Redireciona para a página de login
+            } else {
+                alert(data.message || 'Erro no cadastro.');
+            }
         })
         .catch((error) => {
             console.error('Erro no registro:', error);
+            alert('Erro ao realizar o cadastro. Por favor, tente novamente.');
         });
+    
     
 });
 
