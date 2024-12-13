@@ -76,7 +76,7 @@ const pool = new Pool({
 
 
 // Rota para cadastro de imóvel
-app.post('/api/cadastro-imovel', upload.array('photos', 12), async (req, res) => {
+app.post('/api/cadastro-imovel', authenticateToken, upload.array('photos', 12), async (req, res) => {
   console.log('Dados recebidos no corpo da requisição:', req.body);
   console.log('Fotos recebidas:', req.files);
 
