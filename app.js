@@ -70,15 +70,14 @@ app.post('/upload', upload.single('image'), (req, res) => {
 
 // Configuração da conexão com o PostgreSQL usando variáveis de ambiente
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgres://postgres:Danilo123@localhost:5432/Ipermutei',
+  connectionString: process.env.DATABASE_URL || 'postgres://postgres:Danilo123@localhost:3000/Ipermutei',
   ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
 });
 
 
 // Rota para cadastro de imóvel
-app.post('/api/cadastro-imovel', authenticateToken, upload.array('photos', 12), async (req, res) => {
-  console.log('Dados recebidos no corpo da requisição:', req.body);
-  console.log('Fotos recebidas:', req.files);
+app.post('/api/cadastro-imovel', authenticateToken,upload.array('photos', 12), async (req, res) => {
+  
 
   const { propertyType, city, number, complement, cep, neighborhood, area, bedrooms, suites, bathrooms, parkingSpaces, price, description, address } = req.body;
 
@@ -137,60 +136,76 @@ app.post('/api/cadastro-imovel', authenticateToken, upload.array('photos', 12), 
 });
 
 
-const SECRET_KEY = '6d700f0280840ccd25b0ddbcf41f0a0b963e5320d703a8cd3aaff433903bb6fbee94aba54687b73968e8078d65a892104c0e48f58198216a912cb589c9073f9d'; // Use uma chave secreta segura
+const SECRET_KEY = '6d700f0280840ccd25b0ddbcf41f0a0b963e5320d703a8cd3aaff433903bb6fbee94aba54687b73968e8078d65a892104c0e48f58198216a912cb589c9073f9d';
+ 
 
 app.post('/api/login', async (req, res) => {
-    const { email, password } = req.body;
+  console.log("Login endpoint hit with data:", req.body);
+  const { email, password } = req.body;
+  
+  // Verificar se o usuário existe
+  const userQuery = 'SELECT * FROM users WHERE email = $1';
+  const userResult = await pool.query(userQuery, [email]);
+  console.log("Query result:", userResult.rows);
 
-    // Verificar se o usuário existe
-    const userQuery = 'SELECT * FROM users WHERE email = $1';
-    const userResult = await pool.query(userQuery, [email]);
+  if (userResult.rows.length === 0) {
+      return res.status(401).json({ message: 'Credenciais inválidas' });
+  }
 
-    if (userResult.rows.length === 0) {
-        return res.status(401).json({ message: 'Credenciais inválidas' });
-    }
+  const user = userResult.rows[0];
 
-    const user = userResult.rows[0];
+  // Verificar a senha
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Credenciais inválidas' });
+  }
 
-    // Verificar a senha
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-        return res.status(401).json({ message: 'Credenciais inválidas' });
-    }
+  // Gerar o token JWT
+  const token = jwt.sign({ userId: user.id, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
 
-    // Gerar o token JWT
-    const token = jwt.sign({ userId: user.id, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
-
-    res.status(200).json({ token, message: 'Login bem-sucedido' });
+  // Incluir o nome do usuário na resposta
+  res.status(200).json({ 
+      token, 
+      name: user.name, // Retorna o nome do usuário
+      message: 'Login bem-sucedido' 
+  });
 });
+
+
 
 
 
 app.post('/api/register', async (req, res) => {
-    const { name, email, telefone, tipoConta, password } = req.body;
+  const { name, email, telefone, tipoConta, password } = req.body;
 
-    try {
-        // Verifica se o email já está em uso
-        const existingUser = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-        if (existingUser.rows.length > 0) {
-            return res.status(400).json({ message: 'E-mail já cadastrado.' });
-        }
+  // Validação simples dos campos
+  if (!name || !email || !telefone || !tipoConta || !password) {
+      return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
+  }
 
-        // Hash da senha para maior segurança
-        const hashedPassword = await bcrypt.hash(password, 10);
+  try {
+      // Verifica se o email já está em uso
+      const existingUser = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+      if (existingUser.rows.length > 0) {
+          return res.status(400).json({ message: 'E-mail já cadastrado.' });
+      }
 
-        // Insere o usuário no banco de dados
-        const result = await pool.query(
-            'INSERT INTO users (name, email, telefone, tipo_conta, password) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-            [name, email, telefone, tipoConta, hashedPassword]
-        );
+      // Hash da senha para maior segurança
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-        res.status(201).json({ message: 'Usuário registrado com sucesso!', userId: result.rows[0].id });
-    } catch (error) {
-        console.error('Erro ao registrar usuário:', error);
-        res.status(500).json({ message: 'Erro interno do servidor.' });
-    }
+      // Insere o usuário no banco de dados
+      const result = await pool.query(
+          'INSERT INTO users (name, email, telefone, tipo_conta, password) VALUES ($1, $2, $3, $4, $5) RETURNING id',
+          [name, email, telefone, tipoConta, hashedPassword]
+      );
+
+      res.status(201).json({ message: 'Usuário registrado com sucesso!', userId: result.rows[0].id });
+  } catch (error) {
+      console.error('Erro ao registrar usuário:', error);
+      res.status(500).json({ message: 'Erro interno do servidor.' });
+  }
 });
+
 
 
 
@@ -198,17 +213,24 @@ app.post('/api/register', async (req, res) => {
 // Middleware para verificar autenticação
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Pega o token do cabeçalho
+  console.log('Cabeçalho Authorization recebido:', authHeader);
 
-  if (!token) return res.status(401).json({ message: 'Token não fornecido. Faça login para continuar.' });
+  const token = authHeader && authHeader.split(' ')[1];
+  if (!token) {
+      console.error('Token ausente');
+      return res.status(401).json({ message: 'Token não fornecido.' });
+  }
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-      if (err) return res.status(403).json({ message: 'Token inválido.' });
-
-      req.user = user; // Anexa os dados do usuário à requisição
-      next(); // Continua para a rota
+      if (err) {
+          console.error('Erro ao verificar token:', err);
+          return res.status(403).json({ message: 'Token inválido.' });
+      }
+      req.user = user;
+      next();
   });
 }
+
 
 module.exports = authenticateToken; // Exporta a função para uso em outros módulos
 

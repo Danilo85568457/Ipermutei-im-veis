@@ -123,8 +123,8 @@ document.getElementById('propertyForm').addEventListener('submit', function(even
   // Faz a requisição para o servidor
   fetch('https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/cadastro-imovel', {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${isAuthenticated}`, // Envia o token no cabeçalho
+    headers:{
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`// Envia o token no cabeçalho // Envia o token no cabeçalho
   },
     body: formData, 
   })

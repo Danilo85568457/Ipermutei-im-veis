@@ -1,13 +1,15 @@
 
 document.getElementById('login-form').addEventListener('submit', function(e) {
     e.preventDefault();
+    console.log("Login form submitted.");
 
     // Capturar os valores do formulário
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+    console.log("Captured values:", { email, password });
 
     // Fazer a requisição ao backend
-    fetch('https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/login', {
+    fetch('http://localhost:4000/api/login',{
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -21,16 +23,15 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
         return response.json();
     })
     .then(data => {
-        // Armazenar o token no localStorage
-        localStorage.setItem('token', data.token);
-        alert(data.message);
-
-        // Redirecionar o usuário
+        // Salvar o token e o nome do usuário
+        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('userName', data.name); // Assumindo que a API retorna o nome do usuário
+        alert('Login bem-sucedido!');
         window.location.href = '/';
     })
     .catch(error => {
-        console.error('Erro no login:', error);
-        alert('Erro ao fazer login. Tente novamente.');
+        console.error('Erro:', error);
+        alert('Falha no login. Verifique suas credenciais.');
     });
 });
 

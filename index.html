@@ -4,9 +4,13 @@
 <title>ipermutei - Plataforma Responsiva de Permutas de Imóveis</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./assets/css/pages/index/partials/index-home-page.css">
+<link rel="stylesheet" href="./assets/css/pages/index/partials/modal=perfil.css">
 <link rel="stylesheet" href="./assets/css/pages/index/index.css">
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
 <body>
+
   <header>
     <div class="container">
       <div class="header-content">
@@ -18,8 +22,8 @@
           <ul>
             <li><a href="./pages/Cadastro-imoveis.html">Cadastre seu imóvel</a></li>
             <li><a href="./pages/busca-imóvel.html">Busque seu Imóvel</a></li>
-            <li><a href="./pages/Cadastro.html">Novo Usuário</a></li>
-            <li><a href="./pages/login.html">Login</a></li>
+            <li id="userMenuMobile"></li>
+            <li id="loginMenuMobile"><a href="./pages/login.html">Login</a></li>
           </ul>
         </nav>
   
@@ -28,13 +32,16 @@
           <ul>
             <li><a href="./pages/Cadastro-imoveis.html">Cadastre seu imóvel</a></li>
             <li><a href="./pages/busca-imóvel.html">Busque seu Imóvel</a></li>
-            <li><a href="./pages/Cadastro.html">Novo Usuário</a></li>
-            <li><a href="./pages/login.html">Login</a></li>
+            <li id="userMenuDesktop"></li>
+            <li id="loginMenuDesktop"><a href="./pages/login.html">Login</a></li>
           </ul>
         </nav>
       </div>
     </div>
   </header>
+  
+  
+  
   
 
 <div class="container">
@@ -163,6 +170,10 @@
   </div>
 </footer>
 
+<script src="./assets/js/global/pages/icone-login.js"></script>
+<script src="./assets/js/global/pages/cadastro-perfil.js"></script>
 <script src="./assets/js/global/pages/nav-bar.js"></script>
+<script src="./assets/js/global/pages/login.js"></script>
+<script src="./app.js"></script>
 </body>
 </html>
