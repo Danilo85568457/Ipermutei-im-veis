@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const propertyShowcaseElement = document.querySelector('.property-grid');
 
     try {
-        const response = await fetch('/api/imoveis-destaque');
+        const response = await fetch('https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/imoveis-destaque');
         if (!response.ok) {
             throw new Error('Erro ao buscar imóveis.');
         }
