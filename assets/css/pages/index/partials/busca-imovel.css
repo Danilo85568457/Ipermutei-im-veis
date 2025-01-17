@@ -243,9 +243,56 @@ header {
   justify-content: space-between;
   flex-wrap: wrap;
 }
-.property-item{
-  margin: 30px 0;
+/* Estiliza o container principal de cada propriedade */
+.property-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem; /* Espaçamento entre os elementos */
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden; /* Para que as bordas sejam aplicadas */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 300px; /* Ajuste conforme necessário */
+  background-color: #fff;
+  margin: 1rem auto; /* Centraliza */
 }
+
+/* Estilo da imagem principal */
+.property-item img {
+  width: 100%;
+  height: 200px; /* Ajuste conforme necessário */
+  object-fit: cover; /* Mantém a proporção */
+}
+
+/* Estiliza o título */
+.property-item h3 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #9747FF;
+  text-align: center;
+  margin: 0.5rem 0;
+}
+
+/* Adiciona os parágrafos em linha */
+.property-item p {
+  display: inline-block;
+  font-size: 0.875rem; /* Tamanho menor */
+  color: #9747FF;
+  margin: 0 0.5rem; /* Espaçamento horizontal */
+  white-space: nowrap; /* Impede quebra de linha */
+}
+
+/* Estiliza o container dos parágrafos */
+.property-item .details {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap; /* Permite que os elementos quebrem linha, se necessário */
+  padding: 0.5rem;
+  gap: 0.5rem;
+}
+
+
 
 @media (max-width: 600px) {
 

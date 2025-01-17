@@ -21,7 +21,7 @@ document.getElementById('registration-form').addEventListener('submit', function
     }
 
     // Enviar dados para o backend
-    fetch('https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/register', {
+    fetch('http://localhost:4000/api/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

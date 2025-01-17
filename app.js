@@ -364,6 +364,49 @@ app.get('/api/imoveis/detalhes', async (req, res) => {
   }
 });
 
+app.get('/api/imoveis-destaque', async (req, res) => {
+  try {
+      // Consulta os 6 imóveis mais recentes
+      const query = `
+          SELECT id, propertytype, city, bedrooms, bathrooms, area, price, photos 
+          FROM imoveis
+          ORDER BY id DESC
+          LIMIT 6`;
+      const result = await pool.query(query);
+
+      // Formata o resultado
+      const imoveis = result.rows.map(imovel => {
+          let photos = [];
+
+          if (imovel.photos) {
+              try {
+                  photos = JSON.parse(imovel.photos); // Garante que `photos` seja um array
+              } catch (e) {
+                  console.error("Erro ao processar JSON de photos:", e);
+              }
+          }
+
+          return {
+              id: imovel.id,
+              propertyType: imovel.propertytype,
+              city: imovel.city,
+              bedrooms: imovel.bedrooms,
+              bathrooms: imovel.bathrooms,
+              area: imovel.area,
+              price: imovel.price,
+              photos: photos.length > 0 ? photos : ['default-image-path.jpg'] // Define uma imagem padrão
+          };
+      });
+
+      res.status(200).json(imoveis);
+  } catch (error) {
+      console.error('Erro ao buscar imóveis:', error);
+      res.status(500).json({ message: 'Erro ao buscar imóveis.' });
+  }
+});
+
+
+
 
 const port = process.env.PORT || 4000;
 

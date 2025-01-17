@@ -9,7 +9,7 @@ document.getElementById('property-search-form').addEventListener('submit', funct
     const searchParams = getSearchParams();
     console.log('Parâmetros enviados para o backend local:', searchParams); // Log dos parâmetros
 
-    fetch(`https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/buscar-imoveis?${searchParams}`)
+    fetch(`http://localhost:4000/api/buscar-imoveis?${searchParams}`)
       .then(response => {
         if (!response.ok) throw new Error('Erro ao buscar imóveis do backend');
         return response.json();
@@ -252,6 +252,20 @@ function displayProperties(properties, containerId) {
     const parkingParagraph = document.createElement('p');
     parkingParagraph.innerHTML = `<strong>Vagas:</strong> ${property.Vagas || 'N/A'}`;
 
+    // Criando o contêiner para os detalhes
+    const detailsContainer = document.createElement('div');
+    detailsContainer.className = 'details';
+
+    // Adicionando os parágrafos ao contêiner de detalhes
+    detailsContainer.appendChild(cityParagraph);
+    detailsContainer.appendChild(neighborhoodParagraph);
+    detailsContainer.appendChild(priceParagraph);
+    detailsContainer.appendChild(rentParagraph);
+    detailsContainer.appendChild(areaParagraph);
+    detailsContainer.appendChild(bedroomsParagraph);
+    detailsContainer.appendChild(suitesParagraph);
+    detailsContainer.appendChild(parkingParagraph);
+
     // Exibir imagem principal (se disponível)
     if (property.Foto && Array.isArray(property.Foto) && property.Foto.length > 0) {
       const imageElement = document.createElement('img');
@@ -264,19 +278,12 @@ function displayProperties(properties, containerId) {
       console.warn(`Imagem não encontrada para o imóvel com código: ${property.Codigo}`);
     }
 
-    // Adicionando os elementos ao container
+    // Adicionando os elementos ao container principal
     propertyElement.appendChild(title);
-    propertyElement.appendChild(cityParagraph);
-    propertyElement.appendChild(neighborhoodParagraph);
-    propertyElement.appendChild(priceParagraph);
-    propertyElement.appendChild(rentParagraph);
-    propertyElement.appendChild(areaParagraph);
-    propertyElement.appendChild(bedroomsParagraph);
-    propertyElement.appendChild(suitesParagraph);
-    propertyElement.appendChild(parkingParagraph);
-
+    propertyElement.appendChild(detailsContainer); // Adiciona o contêiner de detalhes ao card
     container.appendChild(propertyElement);
-  });
+});
+
 }
 
 
