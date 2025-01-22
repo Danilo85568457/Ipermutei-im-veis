@@ -386,18 +386,28 @@ app.get('/api/imoveis-destaque', async (req, res) => {
 
       // Formata os resultados
       const imoveis = result.rows.map(imovel => {
-          let photos = [];
-          try {
-              // Processa as fotos, se houver
-              photos = imovel.photos ? JSON.parse(imovel.photos) : [];
-              photos = photos.filter(photo => photo.startsWith('http')); // Filtra URLs válidas
-          } catch (e) {
-              console.error(`Erro ao processar JSON de photos para o imóvel ID ${imovel.id}:`, e);
-          }
-
+        let photos = [];
+        try {
+          if (typeof imovel.photos === 'string') {
+            if (imovel.photos.startsWith('[')) {
+                photos = JSON.parse(imovel.photos);
+            } else if (imovel.photos.includes(',')) {
+                photos = imovel.photos.split(',').map(url => url.trim());
+            } else if (imovel.photos.startsWith('./') || imovel.photos.startsWith('http')) {
+                photos = [imovel.photos.trim()];
+            } else {
+                photos = [];
+            }
+        }
+        
+            photos = photos.filter(photo => photo.startsWith('https')); // Filtra URLs válidas
+        } catch (e) {
+            console.error(`Erro ao processar JSON de photos para o imóvel ID ${imovel.id}:`, e);
+        }
+        
           // Adiciona uma imagem padrão se nenhuma foto válida for encontrada
           if (photos.length === 0) {
-              photos.push('https://s3.sa-east-1.amazonaws.com/meu-bucket-ipermutei/uploads/1731011218777_baixados(1).jpeg');
+              photos.push('https://s3.sa-east-1.amazonaws.com/meu-bucket-ipermutei/uploads/1731011218777_baixados (1).jpeg');
           }
 
           return {

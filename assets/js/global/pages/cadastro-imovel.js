@@ -121,7 +121,7 @@ document.getElementById('propertyForm').addEventListener('submit', function(even
   });
 
   // Faz a requisição para o servidor
-  fetch('http://localhost:4000/api/cadastro-imovel', {
+  fetch('https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/cadastro-imovel', {
     method: 'POST',
     headers:{
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`// Envia o token no cabeçalho // Envia o token no cabeçalho

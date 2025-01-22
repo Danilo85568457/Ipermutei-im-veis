@@ -22,26 +22,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         
                 // Verifica e converte o campo photos para um array JSON válido
                 let photosArray;
-                if (typeof imovel.photos === 'string') {
-                    // Caso photos seja uma string separada por vírgulas, converte para um array
-                    if (imovel.photos.includes(',')) {
-                        photosArray = imovel.photos.split(',').map(url => url.trim());
+                    if (typeof imovel.photos === 'string') {
+                        if (imovel.photos.startsWith('[')) {
+                            photosArray = JSON.parse(imovel.photos);
+                        } else if (imovel.photos.includes(',')) {
+                            photosArray = imovel.photos.split(',').map(url => url.trim());
+                        } else {
+                            photosArray = [imovel.photos.trim()];
+                        }
+                    } else if (Array.isArray(imovel.photos)) {
+                        photosArray = imovel.photos;
                     } else {
-                        // Caso seja uma única URL, cria um array com ela
-                        photosArray = [imovel.photos];
+                        photosArray = [];
                     }
-                } else if (Array.isArray(imovel.photos)) {
-                    // Caso já seja um array, utiliza diretamente
-                    photosArray = imovel.photos;
-                } else {
-                    throw new Error(`Formato inválido para photos: ${imovel.photos}`);
-                }
+                    photosArray = photosArray.filter(photo => photo.startsWith('https') || photo.startsWith('./'));
         
                 console.log(`Photos processadas para imóvel ID ${imovel.id}:`, photosArray);
         
                 const photosHTML = photosArray.map(photo => `
                     <img src="${photo}" alt="${imovel.propertyType} em ${imovel.city}" class="property-image"
-                         onerror="this.onerror=null; this.src='https://s3.sa-east-1.amazonaws.com/meu-bucket-ipermutei/uploads/1731011218777_baixados(1).jpeg';">
+                         onerror="this.onerror=null; this.src='https://s3.sa-east-1.amazonaws.com/meu-bucket-ipermutei/uploads/1731011218777_baixados (1).jpeg';">
                 `).join('');
         
                 const propertyCard = `
