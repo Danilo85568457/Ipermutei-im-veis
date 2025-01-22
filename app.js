@@ -366,24 +366,38 @@ app.get('/api/imoveis/detalhes', async (req, res) => {
 
 app.get('/api/imoveis-destaque', async (req, res) => {
   try {
-      // Consulta os 6 imóveis mais recentes
+      console.log("Iniciando busca de imóveis no banco de dados...");
+
       const query = `
           SELECT id, propertytype, city, bedrooms, bathrooms, area, price, photos 
           FROM imoveis
           ORDER BY id DESC
-          LIMIT 6`;
+          LIMIT 6
+      `;
       const result = await pool.query(query);
 
-      // Formata o resultado
+      // Verifica se há resultados
+      if (result.rows.length === 0) {
+          console.warn("Nenhum imóvel encontrado no banco de dados.");
+          return res.status(200).json([]);
+      }
+
+      console.log(`Total de imóveis encontrados: ${result.rows.length}`);
+
+      // Formata os resultados
       const imoveis = result.rows.map(imovel => {
           let photos = [];
+          try {
+              // Processa as fotos, se houver
+              photos = imovel.photos ? JSON.parse(imovel.photos) : [];
+              photos = photos.filter(photo => photo.startsWith('http')); // Filtra URLs válidas
+          } catch (e) {
+              console.error(`Erro ao processar JSON de photos para o imóvel ID ${imovel.id}:`, e);
+          }
 
-          if (imovel.photos) {
-              try {
-                  photos = JSON.parse(imovel.photos); // Garante que `photos` seja um array
-              } catch (e) {
-                  console.error("Erro ao processar JSON de photos:", e);
-              }
+          // Adiciona uma imagem padrão se nenhuma foto válida for encontrada
+          if (photos.length === 0) {
+              photos.push('https://s3.sa-east-1.amazonaws.com/meu-bucket-ipermutei/uploads/1731011218777_baixados(1).jpeg');
           }
 
           return {
@@ -394,16 +408,21 @@ app.get('/api/imoveis-destaque', async (req, res) => {
               bathrooms: imovel.bathrooms,
               area: imovel.area,
               price: imovel.price,
-              photos: photos.length > 0 ? photos : ['default-image-path.jpg'] // Define uma imagem padrão
+              photos
           };
       });
 
+      console.log("Retornando imóveis formatados para o cliente.");
       res.status(200).json(imoveis);
+
   } catch (error) {
-      console.error('Erro ao buscar imóveis:', error);
+      console.error('Erro ao buscar imóveis no banco de dados:', error);
       res.status(500).json({ message: 'Erro ao buscar imóveis.' });
   }
 });
+
+
+
 
 
 
