@@ -1,22 +1,26 @@
-<html><head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Busca de Imóvel - ipermutei</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/pages/index/partials/busca-imovel.css">
-<link rel="stylesheet" href="../assets/css/pages/index/partials/modal=perfil.css">
-<link rel="stylesheet" href="../assets/css/pages/index/index.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Busca de Imóvel - ipermutei</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/pages/index/partials/busca-imovel.css">
+  <link rel="stylesheet" href="../assets/css/pages/index/partials/modal=perfil.css">
+  <link rel="stylesheet" href="../assets/css/pages/index/index.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
+
 <body>
   <header>
     <div class="container">
       <div class="header-content">
-        <a href="/"><img src="../assets/files/imagem/logo.jpg" alt="ipermutei logo" class="logo" style="height: 40px;"></a>
-  
+        <a href="/"><img src="../assets/files/imagem/logo.jpg" alt="ipermutei logo" class="logo"
+            style="height: 40px;"></a>
+
         <!-- Menu para Mobile -->
         <div class="nav-toggle">☰</div> <!-- Toggle button para mobile -->
         <nav class="mobile-menu">
@@ -27,7 +31,7 @@
             <li id="loginMenuMobile"><a href="./login.html">Login</a></li>
           </ul>
         </nav>
-  
+
         <!-- Menu para Desktop -->
         <nav class="desktop-menu">
           <ul>
@@ -41,135 +45,145 @@
     </div>
   </header>
 
-    <div class="container">
-        <div class="main-content">
-            <h1>Descreva o Imóvel que Procura</h1>
-            <div class="form-container">
-              <form id="property-search-form" action="/api/buscar-imoveis" method="POST">
-                    <div class="form-row">
-                        <div class="form-col">
-                            <label for="city">Tipo de imóvel:</label>
-            
-                        </div>
-                        <select id="propertyType" name="propertyType" required="">
-                          <option value="">Selecione o tipo de imóvel</option>
-                          <option value="apartamento">Apartamento</option>
-                          <option value="casa">Casa</option>
-                          <option value="comercial">Comercial</option>
-                          <option value="terreno">Terreno</option>
-                        </select>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-col">
-                            <label for="city">Cidade:</label>
-                            <input type="text" id="city" name="city" required="">
-                        </div>
-                        <div class="form-col">
-                            <label for="neighborhood">Bairro:</label>
-                            <input type="text" id="neighborhood" name="neighborhood">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-col">
-                            <label for="min-area">Metragem mínima (m²):</label>
-                            <input type="number" id="min-area" name="min-area" min="1" required="">
-                        </div>
-                        <div class="form-col">
-                            <label for="max-area">Metragem maxima (m²):</label>
-                            <input type="number" id="max-area" name="max-area" min="1" required="">
-                        </div>
-                        <div class="form-col">
-                            <label for="bedrooms">Nº de dormitórios:</label>
-                            <input type="number" id="bedrooms" name="bedrooms" min="0" required="">
-                        </div>
-                        <div class="form-col">
-                            <label for="parking">Nº de vagas de garagem:</label>
-                            <input type="number" id="parking" name="parking" min="0" required="">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                      <div class="form-col">
-                        <label for="min-price">Valor mínimo (R$):</label>
-                        <input type="text" id="min-price" name="min-price" required oninput="formatCurrency(this)">
-                      </div>
-                      <div class="form-col">
-                        <label for="max-price">Valor máximo (R$):</label>
-                        <input type="text" id="max-price" name="max-price" required oninput="formatCurrency(this)">
-                      </div>
-                    </div>
-                    
-                    
-                    <div class="form-group">
-                        <label for="relevant-items">Itens relevantes:</label>
-                        <textarea id="relevant-items" name="relevant-items" placeholder="Ex.: Área de lazer, ar condicionado, varanda gourmet, etc."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="payment-method">Como pretende pagar a diferença de valor, se houver:</label>
-                        <select id="payment-method" name="payment-method" required="">
-                            <option value="">Selecione uma opção</option>
-                            <option value="own-resources">Recursos próprios</option>
-                            <option value="bank-financing">Financiamento bancário</option>
-                            <option value="both">Ambos (recursos próprios e financiamento)</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="submit-btn" style="font-size: 200%;">Buscar Imóveis</button>
-                </form>
+  <div class="container">
+    <div class="main-content">
+      <h1>Descreva o Imóvel que Procura</h1>
+      <div class="form-container">
+        <form id="property-search-form" action="/api/buscar-imoveis" method="POST">
+          <div class="form-row">
+            <div class="form-col">
+              <label for="city">Tipo de imóvel:</label>
+
             </div>
-        </div>
-        <div id="resultContainer">
-         
-        </div>
-        <div id="sandboxResultContainer">
-          
-        </div>
+            <select id="propertyType" name="propertyType" required="">
+              <option value="">Selecione o tipo de imóvel</option>
+              <option value="apartamento">Apartamento</option>
+              <option value="casa">Casa</option>
+              <option value="comercial">Comercial</option>
+              <option value="terreno">Terreno</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-col">
+              <label for="city">Cidade:</label>
+              <input type="text" id="city" name="city" required="">
+            </div>
+            <div class="form-col">
+              <label for="neighborhood">Bairro:</label>
+              <input type="text" id="neighborhood" name="neighborhood">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-col">
+              <label for="min-area">Metragem mínima (m²):</label>
+              <input type="number" id="min-area" name="min-area" min="1" required="">
+            </div>
+            <div class="form-col">
+              <label for="max-area">Metragem maxima (m²):</label>
+              <input type="number" id="max-area" name="max-area" min="1" required="">
+            </div>
+            <div class="form-col">
+              <label for="bedrooms">Nº de dormitórios:</label>
+              <input type="number" id="bedrooms" name="bedrooms" min="0" required="">
+            </div>
+            <div class="form-col">
+              <label for="parking">Nº de vagas de garagem:</label>
+              <input type="number" id="parking" name="parking" min="0" required="">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-col">
+              <label for="min-price">Valor mínimo (R$):</label>
+              <input type="text" id="min-price" name="min-price" required oninput="formatCurrency(this)">
+            </div>
+            <div class="form-col">
+              <label for="max-price">Valor máximo (R$):</label>
+              <input type="text" id="max-price" name="max-price" required oninput="formatCurrency(this)">
+            </div>
+          </div>
+
+
+          <div class="form-group">
+            <label for="relevant-items">Itens relevantes:</label>
+            <textarea id="relevant-items" name="relevant-items"
+              placeholder="Ex.: Área de lazer, ar condicionado, varanda gourmet, etc."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="payment-method">Como pretende pagar a diferença de valor, se houver:</label>
+            <select id="payment-method" name="payment-method" required="">
+              <option value="">Selecione uma opção</option>
+              <option value="own-resources">Recursos próprios</option>
+              <option value="bank-financing">Financiamento bancário</option>
+              <option value="both">Ambos (recursos próprios e financiamento)</option>
+            </select>
+          </div>
+          <button type="submit" class="submit-btn" style="font-size: 200%;">Buscar Imóveis</button>
+        </form>
+      </div>
     </div>
-    <div id="propertyDetailsContainer" class="modal"></div>
+    <div id="resultContainer">
 
-    <footer>
-        <div class="container">
-          <div class="footer-content">
-            <div class="footer-section">
-              <h3>Sobre a ipermutei</h3>
-              <p>A ipermutei é uma plataforma inovadora que revoluciona o mercado imobiliário, facilitando a permuta de imóveis de forma inteligente e eficiente.</p>
-            </div>
-            <div class="footer-section">
-              <h3>Nossa Missão</h3>
-              <p>Simplificar e agilizar o processo de troca de imóveis, proporcionando uma experiência transparente e satisfatória para todos os envolvidos.</p>
-            </div>
-            <div class="footer-section">
-              <h3>Nosso Propósito</h3>
-              <p>Transformar o mercado imobiliário, tornando a permuta de imóveis uma opção acessível, segura e vantajosa para proprietários e compradores.</p>
-            </div>
-            <div class="footer-section">
-              <h3>Contato</h3>
-              <p>Email: contato@ipermutei.com.br</p>
-              <p>Telefone: (11) 1234-5678</p>
-              <div class="social-icons">
-                <a href="https://facebook.com/ipermutei" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-                <a href="https://instagram.com/ipermutei" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="https://linkedin.com/company/ipermutei" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                <a href="https://youtube.com/ipermutei" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-              </div>
-            </div>
-            <div class="footer-section">
-              <h3>Legal</h3>
-              <p><a href="/termos-de-uso" class="footer-link">Termos de Uso</a></p>
-              <p><a href="/politica-de-privacidade" class="footer-link">Política de Privacidade</a></p>
-            </div>
-          </div>
-          <div class="copyright">
-            <p style="color: #ecddf8;">© 2023 ipermutei. Todos os direitos reservados.</p>
+    </div>
+    <div id="sandboxResultContainer">
+
+    </div>
+  </div>
+  <div class="property-showcase" style="margin-top: 20px;">
+    <div class="property-grid"></div>
+  </div>
+
+  <div id="propertyDetailsContainer" class="modal"></div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Sobre a ipermutei</h3>
+          <p>A ipermutei é uma plataforma inovadora que revoluciona o mercado imobiliário, facilitando a permuta de
+            imóveis de forma inteligente e eficiente.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Nossa Missão</h3>
+          <p>Simplificar e agilizar o processo de troca de imóveis, proporcionando uma experiência transparente e
+            satisfatória para todos os envolvidos.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Nosso Propósito</h3>
+          <p>Transformar o mercado imobiliário, tornando a permuta de imóveis uma opção acessível, segura e vantajosa
+            para proprietários e compradores.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Contato</h3>
+          <p>Email: contato@ipermutei.com.br</p>
+          <p>Telefone: (11) 1234-5678</p>
+          <div class="social-icons">
+            <a href="https://facebook.com/ipermutei" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i
+                class="fab fa-facebook"></i></a>
+            <a href="https://instagram.com/ipermutei" target="_blank" rel="noopener noreferrer"
+              aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://linkedin.com/company/ipermutei" target="_blank" rel="noopener noreferrer"
+              aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="https://youtube.com/ipermutei" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i
+                class="fab fa-youtube"></i></a>
           </div>
         </div>
-      </footer>
+        <div class="footer-section">
+          <h3>Legal</h3>
+          <p><a href="/termos-de-uso" class="footer-link">Termos de Uso</a></p>
+          <p><a href="/politica-de-privacidade" class="footer-link">Política de Privacidade</a></p>
+        </div>
+      </div>
+      <div class="copyright">
+        <p style="color: #ecddf8;">© 2023 ipermutei. Todos os direitos reservados.</p>
+      </div>
+    </div>
+  </footer>
 
- <script src="../assets/js/global/pages/buscar-imovel.js"></script>
- <script src="../assets/js/global/pages/nav-bar.js"></script>
- <script src="../assets/js/global/pages/login.js"></script>
- <script src="../assets/js/global/pages/icone-login.js"></script>
- <script src="../app.js"></script>
-
-
-
+  <script src="../assets/js/global/pages/buscar-imovel.js"></script>
+  <script src="../assets/js/global/pages/nav-bar.js"></script>
+  <script src="../assets/js/global/pages/login.js"></script>
+  <script src="../assets/js/global/pages/icone-login.js"></script>
+  <script src="../app.js"></script>
 </body>
+
 </html>

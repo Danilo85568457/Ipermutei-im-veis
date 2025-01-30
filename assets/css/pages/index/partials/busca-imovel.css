@@ -243,26 +243,33 @@ header {
   justify-content: space-between;
   flex-wrap: wrap;
 }
+
 /* Estiliza o container principal de cada propriedade */
 .property-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem; /* Espaçamento entre os elementos */
+  gap: 0.5rem;
+  /* Espaçamento entre os elementos */
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  overflow: hidden; /* Para que as bordas sejam aplicadas */
+  overflow: hidden;
+  /* Para que as bordas sejam aplicadas */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  max-width: 300px; /* Ajuste conforme necessário */
+  max-width: 300px;
+  /* Ajuste conforme necessário */
   background-color: #fff;
-  margin: 1rem auto; /* Centraliza */
+  margin: 1rem auto;
+  /* Centraliza */
 }
 
 /* Estilo da imagem principal */
 .property-item img {
   width: 100%;
-  height: 200px; /* Ajuste conforme necessário */
-  object-fit: cover; /* Mantém a proporção */
+  height: 200px;
+  /* Ajuste conforme necessário */
+  object-fit: cover;
+  /* Mantém a proporção */
 }
 
 /* Estiliza o título */
@@ -277,17 +284,21 @@ header {
 /* Adiciona os parágrafos em linha */
 .property-item p {
   display: inline-block;
-  font-size: 0.875rem; /* Tamanho menor */
+  font-size: 0.875rem;
+  /* Tamanho menor */
   color: #9747FF;
-  margin: 0 0.5rem; /* Espaçamento horizontal */
-  white-space: nowrap; /* Impede quebra de linha */
+  margin: 0 0.5rem;
+  /* Espaçamento horizontal */
+  white-space: nowrap;
+  /* Impede quebra de linha */
 }
 
 /* Estiliza o container dos parágrafos */
 .property-item .details {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap; /* Permite que os elementos quebrem linha, se necessário */
+  flex-wrap: wrap;
+  /* Permite que os elementos quebrem linha, se necessário */
   padding: 0.5rem;
   gap: 0.5rem;
 }
@@ -309,4 +320,123 @@ header {
   }
 
 
+}
+
+
+
+.property-showcase {
+  margin-top: 40px;
+  padding: 40px 15px;
+}
+
+.property-showcase h2 {
+  text-align: center;
+  color: var(--primary-color);
+  margin-bottom: 30px;
+}
+
+.property-grid {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.property-card {
+  flex-basis: calc(33.333% - 20px);
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.property-card:hover {
+  transform: translateY(-5px);
+}
+
+.property-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.property-details {
+  padding: 20px;
+}
+
+.property-details h3 {
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.property-details p {
+  color: var(--light-text);
+  margin-bottom: 15px;
+}
+
+.property-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  margin: 0 10px;
+  transition: transform 0.2s ease;
+}
+
+.action-btn:hover {
+  transform: scale(1.1);
+}
+
+.action-btn.dislike {
+  color: #ff4444;
+}
+
+.action-btn.like {
+  color: var(--secondary-color);
+}
+
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+}
+
+.carousel img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  display: none;
+}
+
+.carousel img.active {
+  display: block;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  border-radius: 50%;
+}
+
+.arrow-left {
+  left: 10px;
+}
+
+.arrow-right {
+  right: 10px;
 }

@@ -4,82 +4,100 @@ document.getElementById('property-search-form').addEventListener('submit', funct
 
   const isSandboxTestMode = true; // Altere para false quando não estiver testando a sandbox
 
-  if (!isSandboxTestMode) {
-    // Fluxo principal do código para o backend local
-    const searchParams = getSearchParams();
-    console.log('Parâmetros enviados para o backend local:', searchParams); // Log dos parâmetros
+  const result = [];
 
-    fetch(`https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/buscar-imoveis?${searchParams}`)
-      .then(response => {
-        if (!response.ok) throw new Error('Erro ao buscar imóveis do backend');
-        return response.json();
-      })
-      .then(properties => {
-        console.log('Propriedades retornadas do backend local:', properties);
-        displayProperties(properties, 'resultContainer');
-      })
-      .catch(error => {
-        console.error('Erro ao buscar imóveis do backend:', error);
-        alert('Erro ao buscar imóveis do backend. Tente novamente.');
-      });
-  }
+  // Fluxo principal do código para o backend local
+  const searchParams = getSearchParams();
+  console.log('Parâmetros enviados para o backend local:', searchParams); // Log dos parâmetros
+
+  fetch(`http://localhost:4000/api/buscar-imoveis`)
+    .then(response => {
+      if (!response.ok) throw new Error('Erro ao buscar imóveis do backend');
+      return response.json();
+    })
+    .then(properties => {
+      console.log('Propriedades retornadas do backend local:', properties);
+      properties.forEach(p => result.push({...p, propertytype: p.propertytype}))
+      // displayProperties(properties, 'resultContainer');
+    })
+    .catch(error => {
+      console.error('Erro ao buscar imóveis do backend:', error);
+      alert('Erro ao buscar imóveis do backend. Tente novamente.');
+    });
 
   // Fluxo para a sandbox
-  const searchParamsForSandbox = isSandboxTestMode 
-    ? getSimplifiedSearchParams() 
+  const searchParamsForSandbox = isSandboxTestMode
+    ? getSimplifiedSearchParams()
     : getSearchParamsAsObject();
 
   console.log('Parâmetros para a sandbox:', searchParamsForSandbox);
 
-  const url = `https://sandbox-rest.vistahost.com.br/imoveis/listar?key=c9fdd79584fb8d369a6a579af1a8f681&showtotal=1&pesquisa=${encodeURIComponent(JSON.stringify({
+  const url = `https://danielaf-rest.vistahost.com.br/imoveis/listar?key=0cac1b38e15f9ab12a8e4070b2f168fe&showtotal=1&pesquisa=${encodeURIComponent(JSON.stringify({
     fields: [
-      "Codigo", 
-      "Categoria", 
-      "Bairro", 
-      "Cidade", 
-      "ValorVenda", 
-      "ValorLocacao", 
-      "Dormitorios", 
-      "Suites", 
-      "Vagas", 
-      "AreaTotal", 
+      "Codigo",
+      "Categoria",
+      "Bairro",
+      "Cidade",
+      "ValorVenda",
+      "ValorLocacao",
+      "Dormitorios",
+      "Suites",
+      "Vagas",
+      "AreaTotal",
+      "BanheiroSocialQtd"
     ],
-    filter: searchParamsForSandbox
+    // filter: searchParamsForSandbox
   }))}`;
-  
+
 
   console.log('URL gerada para a sandbox:', url);
 
-fetch(url, {
-  method: 'GET',
-  headers: {
-    'Accept': 'application/json'
-  }
-})
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`Erro ao buscar imóveis: ${response.status}`);
+  fetch(url, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json'
     }
-    return response.json(); // Converte a resposta para JSON
   })
-  .then(data => {
-    console.log('Dados originais:', data);
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar imóveis: ${response.status}`);
+      }
+      return response.json(); // Converte a resposta para JSON
+    })
+    .then(async data => {
+      console.log('Dados originais:', data);
 
-    // Transforme o objeto de propriedades em um array, caso necessário
-    const properties = Array.isArray(data) ? data : Object.values(data);
+      // Transforme o objeto de propriedades em um array, caso necessário
+      let properties = Array.isArray(data) ? data : Object.values(data);
+      properties = properties.filter(p => p.Codigo)
 
-    console.log('Imóveis formatados como array:', properties);
+      // adicionar um fetch
+      for await (const property of properties) {
+        const images = await fetchPropertyDetailsAndAddImages(property)
+        property["Foto"] = images
+        result.push({
+          id: property.Codigo,
+          propertyType: property.Categoria,
+          city: property.Cidade,
+          neighborhood: property.Bairro,
+          price: property.ValorVenda,
+          area: property.AreaTotal,
+          bedrooms: property.Dormitorios,
+          bathrooms: property.BanheiroSocialQtd,
+          suites: property.Suites,
+          parkingspaces: property.Vagas,
+          photos: images.map(i => i.FotoPequena)
+        })
+      }
+      // result.push(...properties)
 
-    // Chame a função de exibição de imóveis
-    displayProperties(properties, 'sandboxResultContainer');
-  })
-  .catch(error => {
-    console.error('Erro ao buscar imóveis da sandbox:', error);
-    alert('Erro ao buscar imóveis da sandbox. Tente novamente.');
-  });
-
-
-  
+      // Chame a função de exibição de imóveis
+      displayProperties(result, 'sandboxResultContainer');
+    })
+    .catch(error => {
+      console.error('Erro ao buscar imóveis da sandbox:', error);
+      alert('Erro ao buscar imóveis da sandbox. Tente novamente.');
+    });
 });
 
 function getSimplifiedSearchParams() {
@@ -97,6 +115,8 @@ function getSimplifiedSearchParams() {
 
   console.log('Parâmetros simplificados para a sandbox:', searchParams);
   return searchParams;
+
+
 }
 
 function getSearchParamsAsObject() {
@@ -164,10 +184,12 @@ function getSearchParamsAsObject() {
   return searchParams;
 }
 
-function fetchPropertyDetailsAndAddImages(property) {
-  const detailsUrl = `https://sandbox-rest.vistahost.com.br/imoveis/detalhes?key=c9fdd79584fb8d369a6a579af1a8f681&imovel=${property.Codigo}`;
-  
-  fetch(detailsUrl, {
+async function fetchPropertyDetailsAndAddImages(property) {
+  console.log("cÓdigo do imÓvel", property.Codigo)
+  const detailsUrl = `https://danielaf-rest.vistahost.com.br/imoveis/detalhes?key=0cac1b38e15f9ab12a8e4070b2f168fe&imovel=${property.Codigo}&pesquisa={"fields":["Codigo","Categoria","Bairro","Cidade","ValorVenda","ValorLocacao","Dormitorios","Suites","Vagas","AreaTotal","AreaPrivativa",{"Foto":["Foto","FotoPequena","Destaque"]},"Caracteristicas","InfraEstrutura"]}`;
+
+  let images = []
+  await fetch(detailsUrl, {
     method: 'GET',
     headers: {
       'Accept': 'application/json'
@@ -175,31 +197,33 @@ function fetchPropertyDetailsAndAddImages(property) {
   })
     .then(response => {
       if (!response.ok) {
-        throw new Error(`Erro ao buscar detalhes do imóvel ${property.Codigo}: ${response.status}`);
+        console.log("Deu erro aqui", response)
+        // throw new Error(`Erro ao buscar detalhes do imóvel ${property.Codigo}: ${response.status}`);
       }
       return response.json();
-    })
-    .then(details => {
-      if (details && details.Foto && details.Foto.length > 0) {
-        const container = document.getElementById('sandboxResultContainer');
-        const propertyElement = container.querySelector(`[data-codigo="${property.Codigo}"]`);
+    }).then(details => {
+      //Object.assign(property, {
+      //  Foto: details?.Foto ? Object.values(details?.Foto || []) : []
+      //})
+      images = details?.Foto ? Object.values(details?.Foto || []) : []
 
-        if (propertyElement) {
-          const imageElement = document.createElement('img');
-          imageElement.src = details.Foto[0].FotoPequena || details.Foto[0].Foto; // Use a imagem pequena, se disponível
-          imageElement.alt = `Foto do imóvel ${property.Codigo}`;
-          imageElement.style.width = '100%';
-          imageElement.style.height = 'auto';
-          propertyElement.prepend(imageElement); // Adiciona a imagem no início do bloco
-        }
-      } else {
-        console.warn(`Sem fotos disponíveis para o imóvel ${property.Codigo}`);
-      }
+
+      // if (details && details.Foto && details.Foto.length > 0) {
+      //   property["Foto"] = details.Foto
+      //  } else {
+      //   property["Foto"] = [{ "Foto": "" }]
+      // console.warn(`Sem fotos disponíveis para o imóvel ${property.Codigo}`);
+      // }
     })
     .catch(error => {
       console.error('Erro ao buscar detalhes do imóvel:', error);
-    });
+    })
+
+  return images
+
+
 }
+
 
 function displayProperties(properties, containerId) {
   const container = document.getElementById(containerId);
@@ -211,82 +235,170 @@ function displayProperties(properties, containerId) {
     return;
   }
 
-  properties.forEach(property => {
-    const propertyElement = document.createElement('div');
-    propertyElement.className = 'property-item';
-    propertyElement.setAttribute('data-codigo', property.Codigo); // Identificação única para cada imóvel
+  // properties.forEach(property => {
+  //   const propertyElement = document.createElement('div');
+  //   propertyElement.className = 'property-item';
+  //   propertyElement.setAttribute('data-codigo', property.Codigo);
+  //   console.log(`Buscando elemento para código: ${property.Codigo}`);
+  //   console.log(container.innerHTML);
 
-    // Título com o código do imóvel
-    const title = document.createElement('h3');
-    title.textContent = `${property.Categoria || 'Imóvel'} - Código: ${property.Codigo}`;
 
-    // Cidade
-    const cityParagraph = document.createElement('p');
-    cityParagraph.innerHTML = `<strong>Cidade:</strong> ${property.Cidade || 'N/A'}`;
+  //   // Título com o código do imóvel
+  //   const title = document.createElement('h3');
+  //   title.textContent = `${property.Categoria || 'Imóvel'} - Código: ${property.Codigo}`;
 
-    // Bairro
-    const neighborhoodParagraph = document.createElement('p');
-    neighborhoodParagraph.innerHTML = `<strong>Bairro:</strong> ${property.Bairro || 'N/A'}`;
+  //   // Cidade
+  //   const cityParagraph = document.createElement('p');
+  //   cityParagraph.innerHTML = `<strong>Cidade:</strong> ${property.Cidade || 'N/A'}`;
 
-    // Preço de venda
-    const priceParagraph = document.createElement('p');
-    priceParagraph.innerHTML = `<strong>Preço de Venda:</strong> R$ ${property.ValorVenda || 'N/A'}`;
+  //   // Bairro
+  //   const neighborhoodParagraph = document.createElement('p');
+  //   neighborhoodParagraph.innerHTML = `<strong>Bairro:</strong> ${property.Bairro || 'N/A'}`;
 
-    // Preço de locação
-    const rentParagraph = document.createElement('p');
-    rentParagraph.innerHTML = `<strong>Preço de Locação:</strong> R$ ${property.ValorLocacao || 'N/A'}`;
+  //   // Preço de venda
+  //   const priceParagraph = document.createElement('p');
+  //   priceParagraph.innerHTML = `<strong>Preço de Venda:</strong> R$ ${property.ValorVenda || 'N/A'}`;
 
-    // Área Total
-    const areaParagraph = document.createElement('p');
-    areaParagraph.innerHTML = `<strong>Área Total:</strong> ${property.AreaTotal || 'N/A'} m²`;
+  //   // Preço de locação
+  //   const rentParagraph = document.createElement('p');
+  //   rentParagraph.innerHTML = `<strong>Preço de Locação:</strong> R$ ${property.ValorLocacao || 'N/A'}`;
 
-    // Dormitórios
-    const bedroomsParagraph = document.createElement('p');
-    bedroomsParagraph.innerHTML = `<strong>Dormitórios:</strong> ${property.Dormitorios || 'N/A'}`;
+  //   // Área Total
+  //   const areaParagraph = document.createElement('p');
+  //   areaParagraph.innerHTML = `<strong>Área Total:</strong> ${property.AreaTotal || 'N/A'} m²`;
 
-    // Suítes
-    const suitesParagraph = document.createElement('p');
-    suitesParagraph.innerHTML = `<strong>Suítes:</strong> ${property.Suites || 'N/A'}`;
+  //   // Dormitórios
+  //   const bedroomsParagraph = document.createElement('p');
+  //   bedroomsParagraph.innerHTML = `<strong>Dormitórios:</strong> ${property.Dormitorios || 'N/A'}`;
 
-    // Vagas
-    const parkingParagraph = document.createElement('p');
-    parkingParagraph.innerHTML = `<strong>Vagas:</strong> ${property.Vagas || 'N/A'}`;
+  //   // Suítes
+  //   const suitesParagraph = document.createElement('p');
+  //   suitesParagraph.innerHTML = `<strong>Suítes:</strong> ${property.Suites || 'N/A'}`;
 
-    // Criando o contêiner para os detalhes
-    const detailsContainer = document.createElement('div');
-    detailsContainer.className = 'details';
+  //   // Vagas
+  //   const parkingParagraph = document.createElement('p');
+  //   parkingParagraph.innerHTML = `<strong>Vagas:</strong> ${property.Vagas || 'N/A'}`;
 
-    // Adicionando os parágrafos ao contêiner de detalhes
-    detailsContainer.appendChild(cityParagraph);
-    detailsContainer.appendChild(neighborhoodParagraph);
-    detailsContainer.appendChild(priceParagraph);
-    detailsContainer.appendChild(rentParagraph);
-    detailsContainer.appendChild(areaParagraph);
-    detailsContainer.appendChild(bedroomsParagraph);
-    detailsContainer.appendChild(suitesParagraph);
-    detailsContainer.appendChild(parkingParagraph);
+  //   // Criando o contêiner para os detalhes
+  //   const detailsContainer = document.createElement('div');
+  //   detailsContainer.className = 'details';
 
-    // Exibir imagem principal (se disponível)
-    if (property.Foto && Array.isArray(property.Foto) && property.Foto.length > 0) {
-      const imageElement = document.createElement('img');
-      imageElement.src = property.Foto[0].FotoPequena || property.Foto[0].Foto; // Usa a imagem pequena ou a principal
-      imageElement.alt = `Foto do imóvel ${property.Codigo}`;
-      imageElement.style.width = '100%'; // Ajuste conforme necessário
-      imageElement.style.height = 'auto'; // Mantém proporção
-      propertyElement.appendChild(imageElement);
-    } else {
-      console.warn(`Imagem não encontrada para o imóvel com código: ${property.Codigo}`);
+  //   // Adicionando os parágrafos ao contêiner de detalhes
+  //   detailsContainer.appendChild(cityParagraph);
+  //   detailsContainer.appendChild(neighborhoodParagraph);
+  //   detailsContainer.appendChild(priceParagraph);
+  //   detailsContainer.appendChild(rentParagraph);
+  //   detailsContainer.appendChild(areaParagraph);
+  //   detailsContainer.appendChild(bedroomsParagraph);
+  //   detailsContainer.appendChild(suitesParagraph);
+  //   detailsContainer.appendChild(parkingParagraph);
+
+  //   // Exibir imagem principal (se disponível)
+  //   if (property.Foto && property.Foto.length > 0) {
+  //     console.log("DEU CERTO")
+  //     const imageElement = document.createElement('img');
+  //     imageElement.src = property.Foto[0].FotoPequena || property.Foto[0].Foto; // Usa a imagem pequena ou a principal
+  //     imageElement.alt = `Foto do imóvel ${property.Codigo}`;
+  //     imageElement.style.width = '100%'; // Ajuste conforme necessário
+  //     imageElement.style.height = 'auto'; // Mantém proporção
+  //     propertyElement.appendChild(imageElement);
+  //   } else {
+  //     console.log("DEU ERRADO")
+  //     const imageElement = document.createElement('img');
+  //     imageElement.src = "https://s3.sa-east-1.amazonaws.com/meu-bucket-ipermutei/uploads/1731011218777_baixados%20(1).jpeg"; // Usa a imagem pequena ou a principal
+  //     imageElement.alt = `Foto do imóvel ${property.Codigo}`;
+  //     imageElement.style.width = '100%'; // Ajuste conforme necessário
+  //     imageElement.style.height = 'auto'; // Mantém proporção
+  //     propertyElement.appendChild(imageElement);
+  //     console.warn(`Imagem não encontrada para o imóvel com código: ${property.Codigo}`);
+  //   }
+
+  //   // Adicionando os elementos ao container principal
+  //   propertyElement.appendChild(title);
+  //   propertyElement.appendChild(detailsContainer); // Adiciona o contêiner de detalhes ao card
+  //   container.appendChild(propertyElement);
+  //   fetchPropertyDetailsAndAddImages(property);
+
+  // });
+
+  const propertyShowcaseElement = document.querySelector('.property-grid');
+  propertyShowcaseElement.innerHTML = '';
+
+  properties.forEach(imovel => {
+    try {
+      console.log(`Processando imóvel ID ${imovel.id}...`);
+
+      // Verifica e converte o campo photos para um array JSON válido
+      let photosArray;
+      if (typeof imovel.photos === 'string') {
+        if (imovel.photos.startsWith('[')) {
+          photosArray = JSON.parse(imovel.photos);
+        } else if (imovel.photos.includes(',')) {
+          photosArray = imovel.photos.split(',').map(url => url.trim());
+        } else {
+          photosArray = [imovel.photos.trim()];
+        }
+      } else if (Array.isArray(imovel.photos)) {
+        photosArray = imovel.photos;
+      } else {
+        photosArray = [];
+      }
+      photosArray = photosArray.filter(photo => photo.startsWith('https') || photo.startsWith('./'));
+
+      console.log(`Photos processadas para imóvel ID ${imovel.id}:`, photosArray);
+
+      const photosHTML = photosArray.map((photo, i) => `
+        <img src="${photo}" alt="${imovel.propertyType} em ${imovel.city}" class="property-image ${i === 0 ? 'active' : ''}"
+             onerror="this.onerror=null; this.src='https://s3.sa-east-1.amazonaws.com/meu-bucket-ipermutei/uploads/1731011218777_baixados (1).jpeg';">
+      `).join('');
+
+      const propertyCardElement = document.createElement('div');
+      propertyCardElement.classList.add('property-card');
+      propertyCardElement.setAttribute('data-card', imovel.id);
+      propertyCardElement.innerHTML = `
+        <div class="property-images">
+          <div class="carousel">
+            ${photosHTML}
+            <button class="arrow arrow-left">❮</button>
+            <button class="arrow arrow-right">❯</button>
+          </div>
+        </div>
+        <div class="property-details">
+          <h3>${imovel.propertyType} em ${imovel.city}</h3>
+          <p>${imovel.bedrooms} quartos | ${imovel.bathrooms} banheiros | ${imovel.area}m²</p>
+          <p><strong>Preço:</strong> R$${imovel.price.toLocaleString()}</p>
+        </div>
+      `;
+
+      propertyShowcaseElement.appendChild(propertyCardElement);
+      configurarCarrossel(propertyCardElement);
+
+    } catch (error) {
+      console.error(`Erro ao processar JSON de photos para o imóvel ID ${imovel.id}:`, error);
     }
-
-    // Adicionando os elementos ao container principal
-    propertyElement.appendChild(title);
-    propertyElement.appendChild(detailsContainer); // Adiciona o contêiner de detalhes ao card
-    container.appendChild(propertyElement);
-});
-
+  });
 }
 
+function configurarCarrossel(card) {
+  let currentIndex = 0;
+  const images = card.querySelectorAll(".property-image");
+  const prevButton = card.querySelector(".arrow-left");
+  const nextButton = card.querySelector(".arrow-right");
 
+  function showImage(index) {
+      images.forEach((img, i) => img.classList.toggle("active", i === index));
+  }
+
+  prevButton.addEventListener("click", () => {
+      currentIndex = (currentIndex === 0) ? images.length - 1 : currentIndex - 1;
+      showImage(currentIndex);
+  });
+
+  nextButton.addEventListener("click", () => {
+      currentIndex = (currentIndex === images.length - 1) ? 0 : currentIndex + 1;
+      showImage(currentIndex);
+  });
+}
 
 // Função para retornar os parâmetros como string (para uso no backend local)
 function getSearchParams() {
@@ -348,8 +460,8 @@ function fetchPropertyDetails(imovelId) {
     alert('Código do imóvel não disponível para detalhes.');
     return;
   }
-  
-  fetch(`http://sandbox-rest.vistahost.com.br/imoveis/detalhes?key=c9fdd79584fb8d369a6a579af1a8f681&imovel=1650&pesquisa={"fields":["Codigo","Categoria","Bairro","Cidade","ValorVenda","ValorLocacao","Dormitorios","Suites","Vagas","AreaTotal","AreaPrivativa","Caracteristicas","InfraEstrutura"]}${imovelId}`)
+
+  fetch(`http://danielaf-rest.vistahost.com.br/imoveis/detalhes?key=0cac1b38e15f9ab12a8e4070b2f168fe&imovel=1650&pesquisa={"fields":["Codigo","Categoria","Bairro","Cidade","ValorVenda","ValorLocacao","Dormitorios","Suites","Vagas","AreaTotal","AreaPrivativa","Caracteristicas","InfraEstrutura"]}${imovelId}`)
     .then(response => {
       if (!response.ok) throw new Error('Erro ao buscar detalhes do imóvel');
       return response.json();

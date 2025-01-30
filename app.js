@@ -273,51 +273,51 @@ app.get('/api/buscar-imoveis', async (req, res) => {
 
     // Adiciona filtros dinâmicos com base nos parâmetros fornecidos
     if (propertyType) {
-      query += ` AND LOWER(city) LIKE LOWER($${values.length + 1})`;
-      values.push(`%${propertyType}%`);
+      query += ` AND propertytype ILIKE '%${propertyType}%'`;
+      // values.push(`%${propertyType}%`);
       console.error(`Filtro tipo do Imovel aplicado: ${propertyType}`);
     }
     if (city) {
-      query += ` AND LOWER(city) LIKE LOWER($${values.length + 1})`;
-      values.push(`%${city}%`);
+      query += ` AND city ILIKE '%${city}%'`;
+      // values.push(`%${city}%`);
       console.error(`Filtro de cidade aplicado: ${city}`);
     }
     if (neighborhood) {
-      query += ` AND LOWER(neighborhood) LIKE LOWER($${values.length + 1})`;
-      values.push(`%${neighborhood}%`);
+      query += ` AND neighborhood ILIKE '%${neighborhood}%'`;
+      // values.push(`%${neighborhood}%`);
       console.error(`Filtro de bairro aplicado: ${neighborhood}`);
     }
     if (minArea) {
-      query += ` AND area >= $${values.length + 1}`;
+      query += ` AND area >= ${Number(minArea)}`;
       values.push(minArea);
       console.error(`Filtro de área mínima aplicado: ${minArea}`);
     }
     if (maxArea) {
-      query += ` AND area >= $${values.length + 1}`;
-      values.push(maxArea);
+      query += ` AND area <= ${Number(maxArea)}`;
+      // values.push(maxArea);
       console.error(`Filtro de área maxima aplicado: ${maxArea}`);
     }
     if (bedrooms) {
-      query += ` AND bedrooms >= $${values.length + 1}`;
-      values.push(bedrooms);
+      query += ` AND bedrooms = ${Number(bedrooms)}`;
+      // values.push(bedrooms);
       console.error(`Filtro de número de quartos aplicado: ${bedrooms}`);
     }
     if (parking) {
-      query += ` AND parking_spaces >= $${values.length + 1}`;
-      values.push(parking);
+      query += ` AND parking_spaces = ${NUmber(parking)}`;
+      // values.push(parking);
       console.error(`Filtro de vagas de garagem aplicado: ${parking}`);
     }
     if (minPrice && maxPrice) {
-      query += ` AND price BETWEEN $${values.length + 1} AND $${values.length + 2}`;
-      values.push(minPrice, maxPrice);
+      query += ` AND price BETWEEN ${Number(minPrice)} AND ${Number(maxPrice)}`;
+      // values.push(minPrice, maxPrice);
       console.error(`Filtro de faixa de preço aplicado: minPrice=${minPrice}, maxPrice=${maxPrice}`);
     } else if (minPrice) {
-      query += ` AND price >= $${values.length + 1}`;
-      values.push(minPrice);
+      query += ` AND price >= ${Number(minPrice)}`;
+      // values.push(minPrice);
       console.error(`Filtro de preço mínimo aplicado: ${minPrice}`);
     } else if (maxPrice) {
-      query += ` AND price <= $${values.length + 1}`;
-      values.push(maxPrice);
+      query += ` AND price <= ${Number(maxPrice)}`;
+      // values.push(maxPrice);
       console.error(`Filtro de preço máximo aplicado: ${maxPrice}`);
     }
 
@@ -326,7 +326,7 @@ app.get('/api/buscar-imoveis', async (req, res) => {
     console.error("Valores para a query:", values);
 
     // Executa a consulta
-    const result = await pool.query(query, values);
+    const result = await pool.query(query);
     
     // Log dos resultados encontrados
     console.error(`Imóveis encontrados: ${result.rows.length}`);
