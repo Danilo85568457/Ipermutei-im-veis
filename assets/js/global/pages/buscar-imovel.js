@@ -10,7 +10,7 @@ document.getElementById('property-search-form').addEventListener('submit', funct
   const searchParams = getSearchParams();
   console.log('Parâmetros enviados para o backend local:', searchParams); // Log dos parâmetros
 
-  fetch(`http://localhost:4000/api/buscar-imoveis`)
+  fetch(`https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/buscar-imoveis`)
     .then(response => {
       if (!response.ok) throw new Error('Erro ao buscar imóveis do backend');
       return response.json();
