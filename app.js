@@ -274,17 +274,14 @@ app.get('/api/buscar-imoveis', async (req, res) => {
     // Adiciona filtros dinâmicos com base nos parâmetros fornecidos
     if (propertyType) {
       query += ` AND propertytype ILIKE '%${propertyType}%'`;
-      // values.push(`%${propertyType}%`);
       console.error(`Filtro tipo do Imovel aplicado: ${propertyType}`);
     }
     if (city) {
       query += ` AND city ILIKE '%${city}%'`;
-      // values.push(`%${city}%`);
       console.error(`Filtro de cidade aplicado: ${city}`);
     }
     if (neighborhood) {
       query += ` AND neighborhood ILIKE '%${neighborhood}%'`;
-      // values.push(`%${neighborhood}%`);
       console.error(`Filtro de bairro aplicado: ${neighborhood}`);
     }
     if (minArea) {

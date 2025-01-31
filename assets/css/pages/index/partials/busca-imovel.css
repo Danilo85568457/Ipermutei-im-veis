@@ -303,27 +303,6 @@ header {
   gap: 0.5rem;
 }
 
-
-
-@media (max-width: 600px) {
-
-  .desktop-menu {
-    display: none;
-  }
-
-  nav.active {
-    display: block;
-  }
-
-  .nav-toggle {
-    display: block;
-  }
-
-
-}
-
-
-
 .property-showcase {
   margin-top: 40px;
   padding: 40px 15px;
@@ -357,7 +336,7 @@ header {
 
 .property-image {
   width: 100%;
-  height: 300px;
+  height: 350px;
   object-fit: cover;
 }
 
@@ -439,4 +418,25 @@ header {
 
 .arrow-right {
   right: 10px;
+}
+@media (max-width: 600px) {
+
+  .desktop-menu {
+    display: none;
+  }
+
+  nav.active {
+    display: block;
+  }
+
+  .nav-toggle {
+    display: block;
+  }
+  .property-card {
+    flex-basis: calc(50.40% - 15px);
+  }
+  .arrow{
+    font-size: 10px;
+    padding: 5px;
+  }
 }

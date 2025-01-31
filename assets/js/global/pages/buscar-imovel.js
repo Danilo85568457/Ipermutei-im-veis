@@ -10,7 +10,7 @@ document.getElementById('property-search-form').addEventListener('submit', funct
   const searchParams = getSearchParams();
   console.log('Parâmetros enviados para o backend local:', searchParams); // Log dos parâmetros
 
-  fetch(`https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/buscar-imoveis`)
+  fetch(`http://localhost:4000/api/buscar-imoveis`)
     .then(response => {
       if (!response.ok) throw new Error('Erro ao buscar imóveis do backend');
       return response.json();
@@ -198,30 +198,15 @@ async function fetchPropertyDetailsAndAddImages(property) {
     .then(response => {
       if (!response.ok) {
         console.log("Deu erro aqui", response)
-        // throw new Error(`Erro ao buscar detalhes do imóvel ${property.Codigo}: ${response.status}`);
       }
       return response.json();
     }).then(details => {
-      //Object.assign(property, {
-      //  Foto: details?.Foto ? Object.values(details?.Foto || []) : []
-      //})
       images = details?.Foto ? Object.values(details?.Foto || []) : []
-
-
-      // if (details && details.Foto && details.Foto.length > 0) {
-      //   property["Foto"] = details.Foto
-      //  } else {
-      //   property["Foto"] = [{ "Foto": "" }]
-      // console.warn(`Sem fotos disponíveis para o imóvel ${property.Codigo}`);
-      // }
     })
     .catch(error => {
       console.error('Erro ao buscar detalhes do imóvel:', error);
     })
-
   return images
-
-
 }
 
 
@@ -235,92 +220,6 @@ function displayProperties(properties, containerId) {
     return;
   }
 
-  // properties.forEach(property => {
-  //   const propertyElement = document.createElement('div');
-  //   propertyElement.className = 'property-item';
-  //   propertyElement.setAttribute('data-codigo', property.Codigo);
-  //   console.log(`Buscando elemento para código: ${property.Codigo}`);
-  //   console.log(container.innerHTML);
-
-
-  //   // Título com o código do imóvel
-  //   const title = document.createElement('h3');
-  //   title.textContent = `${property.Categoria || 'Imóvel'} - Código: ${property.Codigo}`;
-
-  //   // Cidade
-  //   const cityParagraph = document.createElement('p');
-  //   cityParagraph.innerHTML = `<strong>Cidade:</strong> ${property.Cidade || 'N/A'}`;
-
-  //   // Bairro
-  //   const neighborhoodParagraph = document.createElement('p');
-  //   neighborhoodParagraph.innerHTML = `<strong>Bairro:</strong> ${property.Bairro || 'N/A'}`;
-
-  //   // Preço de venda
-  //   const priceParagraph = document.createElement('p');
-  //   priceParagraph.innerHTML = `<strong>Preço de Venda:</strong> R$ ${property.ValorVenda || 'N/A'}`;
-
-  //   // Preço de locação
-  //   const rentParagraph = document.createElement('p');
-  //   rentParagraph.innerHTML = `<strong>Preço de Locação:</strong> R$ ${property.ValorLocacao || 'N/A'}`;
-
-  //   // Área Total
-  //   const areaParagraph = document.createElement('p');
-  //   areaParagraph.innerHTML = `<strong>Área Total:</strong> ${property.AreaTotal || 'N/A'} m²`;
-
-  //   // Dormitórios
-  //   const bedroomsParagraph = document.createElement('p');
-  //   bedroomsParagraph.innerHTML = `<strong>Dormitórios:</strong> ${property.Dormitorios || 'N/A'}`;
-
-  //   // Suítes
-  //   const suitesParagraph = document.createElement('p');
-  //   suitesParagraph.innerHTML = `<strong>Suítes:</strong> ${property.Suites || 'N/A'}`;
-
-  //   // Vagas
-  //   const parkingParagraph = document.createElement('p');
-  //   parkingParagraph.innerHTML = `<strong>Vagas:</strong> ${property.Vagas || 'N/A'}`;
-
-  //   // Criando o contêiner para os detalhes
-  //   const detailsContainer = document.createElement('div');
-  //   detailsContainer.className = 'details';
-
-  //   // Adicionando os parágrafos ao contêiner de detalhes
-  //   detailsContainer.appendChild(cityParagraph);
-  //   detailsContainer.appendChild(neighborhoodParagraph);
-  //   detailsContainer.appendChild(priceParagraph);
-  //   detailsContainer.appendChild(rentParagraph);
-  //   detailsContainer.appendChild(areaParagraph);
-  //   detailsContainer.appendChild(bedroomsParagraph);
-  //   detailsContainer.appendChild(suitesParagraph);
-  //   detailsContainer.appendChild(parkingParagraph);
-
-  //   // Exibir imagem principal (se disponível)
-  //   if (property.Foto && property.Foto.length > 0) {
-  //     console.log("DEU CERTO")
-  //     const imageElement = document.createElement('img');
-  //     imageElement.src = property.Foto[0].FotoPequena || property.Foto[0].Foto; // Usa a imagem pequena ou a principal
-  //     imageElement.alt = `Foto do imóvel ${property.Codigo}`;
-  //     imageElement.style.width = '100%'; // Ajuste conforme necessário
-  //     imageElement.style.height = 'auto'; // Mantém proporção
-  //     propertyElement.appendChild(imageElement);
-  //   } else {
-  //     console.log("DEU ERRADO")
-  //     const imageElement = document.createElement('img');
-  //     imageElement.src = "https://s3.sa-east-1.amazonaws.com/meu-bucket-ipermutei/uploads/1731011218777_baixados%20(1).jpeg"; // Usa a imagem pequena ou a principal
-  //     imageElement.alt = `Foto do imóvel ${property.Codigo}`;
-  //     imageElement.style.width = '100%'; // Ajuste conforme necessário
-  //     imageElement.style.height = 'auto'; // Mantém proporção
-  //     propertyElement.appendChild(imageElement);
-  //     console.warn(`Imagem não encontrada para o imóvel com código: ${property.Codigo}`);
-  //   }
-
-  //   // Adicionando os elementos ao container principal
-  //   propertyElement.appendChild(title);
-  //   propertyElement.appendChild(detailsContainer); // Adiciona o contêiner de detalhes ao card
-  //   container.appendChild(propertyElement);
-  //   fetchPropertyDetailsAndAddImages(property);
-
-  // });
-
   const propertyShowcaseElement = document.querySelector('.property-grid');
   propertyShowcaseElement.innerHTML = '';
 
@@ -329,7 +228,8 @@ function displayProperties(properties, containerId) {
       console.log(`Processando imóvel ID ${imovel.id}...`);
 
       // Verifica e converte o campo photos para um array JSON válido
-      let photosArray;
+      let photosArray = [];
+
       if (typeof imovel.photos === 'string') {
         if (imovel.photos.startsWith('[')) {
           photosArray = JSON.parse(imovel.photos);
@@ -340,16 +240,20 @@ function displayProperties(properties, containerId) {
         }
       } else if (Array.isArray(imovel.photos)) {
         photosArray = imovel.photos;
-      } else {
-        photosArray = [];
       }
+
+      // Filtrar apenas fotos válidas
       photosArray = photosArray.filter(photo => photo.startsWith('https') || photo.startsWith('./'));
 
       console.log(`Photos processadas para imóvel ID ${imovel.id}:`, photosArray);
 
+      if (photosArray.length === 0) {
+        console.warn(`Imóvel ID ${imovel.id} ignorado por não ter fotos.`);
+        return;
+      }
+
       const photosHTML = photosArray.map((photo, i) => `
-        <img src="${photo}" alt="${imovel.propertyType} em ${imovel.city}" class="property-image ${i === 0 ? 'active' : ''}"
-             onerror="this.onerror=null; this.src='https://s3.sa-east-1.amazonaws.com/meu-bucket-ipermutei/uploads/1731011218777_baixados (1).jpeg';">
+        <img src="${photo}" alt="${imovel.propertyType} em ${imovel.city}" class="property-image ${i === 0 ? 'active' : ''}">
       `).join('');
 
       const propertyCardElement = document.createElement('div');
@@ -378,6 +282,7 @@ function displayProperties(properties, containerId) {
     }
   });
 }
+
 
 function configurarCarrossel(card) {
   let currentIndex = 0;
