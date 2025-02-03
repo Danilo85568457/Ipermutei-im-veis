@@ -161,7 +161,7 @@ app.post('/api/login', async (req, res) => {
   }
 
   // Gerar o token JWT
-  const token = jwt.sign({ userId: user.id, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
+  const token = jwt.sign({ userId: user.id, email: user.email }, SECRET_KEY, { expiresIn: '7d' });
 
   // Incluir o nome do usuário na resposta
   res.status(200).json({ 
