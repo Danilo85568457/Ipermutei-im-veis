@@ -374,9 +374,45 @@ img, video {
   padding: 30px;
   max-height: 500px;
   opacity: 1;
-
+}
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
 }
 
+.carousel img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  display: none;
+}
+
+.carousel img.active {
+  display: block;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  border-radius: 50%;
+}
+
+.arrow-left {
+  left: 10px;
+}
+
+.arrow-right {
+  right: 10px;
+}
 
 @media (min-width: 1400px) {
   .container {
@@ -452,9 +488,19 @@ img, video {
   .nav-toggle {
     display: block;
   }
- 
 
+  .arrow {
+    font-size: 10px;
+    padding: 5px;
 }
+.arrow-right {
+  right: 10px;
+  }
+.arrow-left {
+  left: 10px;
+  }
+}
+
 @media (max-width: 480px) {
   .logo {
     height: 60px;

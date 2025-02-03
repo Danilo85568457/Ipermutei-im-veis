@@ -208,31 +208,41 @@ app.post('/api/register', async (req, res) => {
 
 
 
-
-
-// Middleware para verificar autenticação
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  console.log('Cabeçalho Authorization recebido:', authHeader);
+    const authHeader = req.headers['authorization'];
+    console.log('🔹 Cabeçalho Authorization recebido:', authHeader);
 
-  const token = authHeader && authHeader.split(' ')[1];
-  if (!token) {
-      console.error('Token ausente');
-      return res.status(401).json({ message: 'Token não fornecido.' });
-  }
+    if (!authHeader) {
+        console.error('❌ Erro: Cabeçalho Authorization ausente.');
+        return res.status(401).json({ message: 'Token não fornecido.' });
+    }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-      if (err) {
-          console.error('Erro ao verificar token:', err);
-          return res.status(403).json({ message: 'Token inválido.' });
-      }
-      req.user = user;
-      next();
-  });
+    const token = authHeader.split(' ')[1]; // Remove o "Bearer "
+    
+    if (!token) {
+        console.error('❌ Erro: Token ausente no cabeçalho Authorization.');
+        return res.status(401).json({ message: 'Token não fornecido corretamente.' });
+    }
+
+    if (!process.env.JWT_SECRET) {
+        console.error('❌ Erro crítico: JWT_SECRET não está definido no .env');
+        return res.status(500).json({ message: 'Erro interno no servidor. Falha na configuração do JWT_SECRET.' });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) {
+            console.error('❌ Erro ao verificar token:', err.message);
+            return res.status(403).json({ message: 'Token inválido ou expirado.' });
+        }
+
+        console.log('✅ Token verificado com sucesso. Usuário:', user);
+        req.user = user;
+        next();
+    });
 }
 
-
 module.exports = authenticateToken; // Exporta a função para uso em outros módulos
+
 
 
 app.get('/api/get-property', async (req, res) => {
@@ -386,16 +396,18 @@ app.get('/api/imoveis-destaque', async (req, res) => {
         let photos = [];
         try {
           if (typeof imovel.photos === 'string') {
-            if (imovel.photos.startsWith('[')) {
-                photos = JSON.parse(imovel.photos);
-            } else if (imovel.photos.includes(',')) {
-                photos = imovel.photos.split(',').map(url => url.trim());
-            } else if (imovel.photos.startsWith('./') || imovel.photos.startsWith('http')) {
-                photos = [imovel.photos.trim()];
-            } else {
-                photos = [];
-            }
-        }
+              console.log(`Fotos como string para o imóvel ID ${imovel.id}: ${imovel.photos}`);
+              if (imovel.photos.startsWith('[')) {
+                  photos = JSON.parse(imovel.photos);
+              } else if (imovel.photos.includes(',')) {
+                  photos = imovel.photos.split(',').map(url => url.trim());
+              } else {
+                  photos = [imovel.photos.trim()];
+              }
+          } else if (Array.isArray(imovel.photos)) {
+              console.log(`Fotos como array para o imóvel ID ${imovel.id}:`, imovel.photos);
+              photos = imovel.photos;
+          }
         
             photos = photos.filter(photo => photo.startsWith('https')); // Filtra URLs válidas
         } catch (e) {
@@ -404,7 +416,7 @@ app.get('/api/imoveis-destaque', async (req, res) => {
         
           // Adiciona uma imagem padrão se nenhuma foto válida for encontrada
           if (photos.length === 0) {
-              photos.push('https://s3.sa-east-1.amazonaws.com/meu-bucket-ipermutei/uploads/1731011218777_baixados (1).jpeg');
+              photos.push('');
           }
 
           return {

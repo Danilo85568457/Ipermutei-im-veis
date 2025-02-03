@@ -71,30 +71,23 @@
     </div>
 
     <div class="property-showcase" style="margin-top: 20px;">
-      <h2>Imóveis em Destaque</h2>
-      <divn  class="property-grid">
+      <div class="property-grid">
         <div class="property-card">
-          <img src="./assets/files/imagem/casa-teste/baixados (1).jpeg" alt="Apartamento em São Paulo" class="property-image">
-          <div class="property-details">
-            <h3>Apartamento em São Paulo</h3>
-            <p>3 quartos | 2 banheiros | 100m²</p>
-          </div>
+          <div class="property-images">
+            <div class="carousel">
+                ${photosHTML}
+                <button class="arrow arrow-left">❮</button>
+                <button class="arrow arrow-right">❯</button>
+            </div>
         </div>
-        <div class="property-card">
-          <img src="./assets/files/imagem/casa-teste/OIP (1).jpeg" alt="Casa no Rio de Janeiro" class="property-image">
-          <div class="property-details">
-            <h3>Casa no Rio de Janeiro</h3>
-            <p>4 quartos | 3 banheiros | 200m²</p>
-          </div>
+        <div class="property-details">
+            <h3>${imovel.propertyType} em ${imovel.city}</h3>
+            <p>${imovel.bedrooms} quartos | ${imovel.bathrooms} banheiros | ${imovel.area}m²</p>
+            <p><strong>Preço:</strong> R$${imovel.price.toLocaleString()}</p>
         </div>
-        <div class="property-card">
-          <img src="./assets/files/imagem/casa-teste/OIP (2).jpeg" alt="Cobertura em Belo Horizonte" class="property-image">
-          <div class="property-details">
-            <h3>Cobertura em Belo Horizonte</h3>
-            <p>2 quartos | 2 banheiros | 150m²</p>
-          </div>
         </div>
       </div>
+    </div>
       <div class="cta-button-wrapper" style="margin-top: 30px; text-align: center; margin-bottom: 20px;">
         <a href="./pages/busca-imóvel.html" class="cta-button" style="background-color: #642f8e;">Conheça Outros Imóveis</a>
       </div>
