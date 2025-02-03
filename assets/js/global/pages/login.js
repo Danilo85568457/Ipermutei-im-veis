@@ -9,7 +9,7 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
     console.log("Captured values:", { email, password });
 
     // Fazer a requisição ao backend
-    fetch('https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/login',{
+    fetch('https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com//api/login',{
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

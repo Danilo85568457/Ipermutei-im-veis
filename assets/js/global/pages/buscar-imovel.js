@@ -10,7 +10,7 @@ document.getElementById('property-search-form').addEventListener('submit', funct
   const searchParams = getSearchParams();
   console.log('Parâmetros enviados para o backend local:', searchParams); // Log dos parâmetros
 
-  fetch(`https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com/api/buscar-imoveis`)
+  fetch(`https://ipermuteidevdanilo-aa5a0d72264e.herokuapp.com//api/buscar-imoveis`)
     .then(response => {
       if (!response.ok) throw new Error('Erro ao buscar imóveis do backend');
       return response.json();
@@ -31,7 +31,8 @@ document.getElementById('property-search-form').addEventListener('submit', funct
     : getSearchParamsAsObject();
 
   console.log('Parâmetros para a sandbox:', searchParamsForSandbox);
-
+  
+  
   const url = `https://danielaf-rest.vistahost.com.br/imoveis/listar?key=0cac1b38e15f9ab12a8e4070b2f168fe&showtotal=1&pesquisa=${encodeURIComponent(JSON.stringify({
     fields: [
       "Codigo",
@@ -99,6 +100,63 @@ document.getElementById('property-search-form').addEventListener('submit', funct
       alert('Erro ao buscar imóveis da sandbox. Tente novamente.');
     });
 });
+
+//let paginaAtual = 1; // Começa na página 1
+//const quantidadePorPagina = 10; // Define o número de imóveis por página
+
+//function buscarImoveis(filtros = {}) {
+ //   const params = new URLSearchParams({
+ //       pagina: paginaAtual,
+ //       quantidade: quantidadePorPagina,
+   //
+   //     ...filtros // Adiciona filtros dinâmicos na URL
+    //});
+
+   // const url = `https://danielaf-rest.vistahost.com.br/api/imoveis?${params.toString()}`;
+
+    //fetch(url)
+       // .then(response => {
+          //  if (!response.ok) {
+             //   throw new Error(`Erro ao buscar imóveis: ${response.status} - ${response.statusText}`);
+           // }
+       //     return response.json();
+      //  })
+       // .then(data => {
+       //     console.log("Total de imóveis:", data.total);
+            //console.log("Página atual:", data.pagina, "de", data.paginas);
+
+            // Filtra os imóveis válidos
+           // const imoveis = Object.values(data).filter(imovel => 
+              //  typeof imovel === "object" && imovel.Codigo
+           // );
+
+            // Exibir imóveis na tela
+           // displayProperties(imoveis, "property-grid");
+
+            // Atualizar paginação
+           // atualizarPaginacao(data.pagina, data.paginas);
+       // })
+       // .catch(error => console.error("Erro ao buscar imóveis:", error));
+//}
+
+//function atualizarPaginacao(pagina, totalPaginas) {
+  //  const paginacaoContainer = document.getElementById("paginacao");
+   // paginacaoContainer.innerHTML = `
+     //   <button onclick="mudarPagina(-1)" ${pagina === 1 ? "disabled" : ""}>⬅️ Anterior</button>
+     //   <span>Página ${pagina} de ${totalPaginas}</span>
+     //   <button onclick="mudarPagina(1)" ${pagina === totalPaginas ? "disabled" : ""}>Próxima ➡️</button>
+  //  `;
+//}
+
+//function mudarPagina(delta) {
+  //  paginaAtual += delta;
+   // buscarImoveis(); // Recarregar os imóveis da nova página
+//}
+
+// Buscar imóveis quando a página carregar
+//buscarImoveis();
+
+
 
 function getSimplifiedSearchParams() {
   const propertyType = document.getElementById('propertyType').value;
