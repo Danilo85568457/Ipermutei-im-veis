@@ -366,7 +366,7 @@ app.get('/api/imoveis-destaque', async (req, res) => {
       console.log("Iniciando busca de imóveis no banco de dados...");
 
       const query = `
-          SELECT id, propertytype, city, bedrooms, bathrooms, area, price, photos 
+          SELECT id, "propertyType", city, bedrooms, bathrooms, area, price, photos 
           FROM imoveis
           ORDER BY id DESC
           LIMIT 6
@@ -409,7 +409,7 @@ app.get('/api/imoveis-destaque', async (req, res) => {
 
           return {
               id: imovel.id,
-              propertyType: imovel.propertytype,
+              propertyType: imovel.propertyType,
               city: imovel.city,
               bedrooms: imovel.bedrooms,
               bathrooms: imovel.bathrooms,
